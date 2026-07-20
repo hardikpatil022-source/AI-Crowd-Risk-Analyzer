@@ -181,52 +181,70 @@ width:100%;
 
 max-width:840px;
 
-margin-top:50px;
+margin:50px auto 0;
 
 align-items:center;
 
 }
 
-.feature-card{
+/* ---- UNIFIED CARD STYLE ----
+   .feature-card and .bottom-card now share identical
+   height, padding, radius and (much lower) opacity so
+   all three boxes look the same size and let the hero
+   background show through. */
 
-display:flex;
-align-items:center;
+.feature-card,
+.bottom-card{
+    display: flex;
+    align-items: center;
+    gap: 20px;
 
-width:100%;
-height:140px;
+    width:100%;
+    min-height:110px;
 
-padding:30px;
+    padding: 20px 24px;
 
-gap:28px;
+    background: linear-gradient(
+        135deg,
+        rgba(255,255,255,0.06),
+        rgba(255,255,255,0.015)
+    );
 
-border-radius:22px;
+    backdrop-filter: blur(14px);
+    -webkit-backdrop-filter: blur(14px);
 
-background:rgba(255,255,255,.08);
+    border: 1px solid rgba(255,255,255,0.12);
 
-border:1px solid rgba(255,255,255,.08);
+    border-radius: 20px;
 
-backdrop-filter:blur(20px);
+    box-shadow:
+        0 10px 40px rgba(0,0,0,0.20),
+        inset 0 1px 1px rgba(255,255,255,0.10);
 
-box-sizing:border-box;
-
-transition:.3s;
-
+    box-sizing:border-box;
+    transition:.35s;
 }
 
-.feature-card:hover{
+.feature-card:hover,
+.bottom-card:hover{
 
 transform:translateY(-6px);
 
-background:rgba(255,255,255,.12);
+background:linear-gradient(
+    135deg,
+    rgba(255,255,255,0.10),
+    rgba(255,255,255,0.03)
+);
 }
 
-.feature-icon{
+.feature-icon,
+.bottom-icon{
 
-width:86px;
-height:86px;
+width:56px;
+height:56px;
 
-min-width:86px;
-min-height:86px;
+min-width:56px;
+min-height:56px;
 
 flex-shrink:0;
 
@@ -234,12 +252,16 @@ display:flex;
 justify-content:center;
 align-items:center;
 
-border-radius:20px;
+border-radius:14px;
 
-font-size:34px;
+font-size:22px;
 
 color:white;
 
+}
+
+.bottom-icon{
+background:linear-gradient(135deg,#06b6d4,#2563eb);
 }
 
 .blue{
@@ -260,23 +282,30 @@ background:
 linear-gradient(135deg,#10b981,#059669);
 }
 
-.feature-text h3{
+.feature-text h3,
+.bottom-card h3{
 
-font-size:20px;
+font-size:18px;
 
-margin-bottom:10px;
+margin-bottom:8px;
 
 font-weight:700;
 
 }
 
-.feature-text p{
+.feature-text p,
+.bottom-card p{
 
-font-size:16px;
+font-size:14px;
 
 line-height:1.5;
 
 color:#cbd5e1;
+}
+
+.feature-text{
+    flex: 1;
+    text-align:left;
 }
 /* ================= RIGHT SIDE ================= */
 
@@ -630,88 +659,16 @@ color:#93c5fd;
 }
 
 /* ================= BOTTOM CARD ================= */
+/* bottom-card sizing/opacity now unified above with .feature-card;
+   only its layout-specific tweaks remain here */
 
 .bottom-card{
 
-width:100%;
+max-width:840px;
 
-height:140px;
-
-margin-top:0;
-
-display:flex;
-
-align-items:center;
+margin:0 auto;
 
 justify-content:flex-start;
-
-gap:28px;
-
-padding:30px;
-
-border-radius:22px;
-
-background:rgba(255,255,255,.08);
-
-border:1px solid rgba(255,255,255,.08);
-
-backdrop-filter:blur(20px);
-
-transition:.35s;
-
-box-sizing:border-box;
-
-}
-
-.bottom-card:hover{
-
-background:rgba(255,255,255,.10);
-
-transform:translateY(-5px);
-
-}
-
-.bottom-icon{
-
-width:60px;
-
-height:60px;
-
-border-radius:16px;
-
-display:flex;
-
-justify-content:center;
-
-align-items:center;
-
-font-size:24px;
-
-background:linear-gradient(135deg,#06b6d4,#2563eb);
-
-color:white;
-
-}
-
-.bottom-card h3{
-
-font-size:18px;
-
-margin-bottom:5px;
-
-color:#67e8f9;
-
-}
-
-.bottom-card p{
-
-margin:0;
-
-font-size:15px;
-
-line-height:1.5;
-
-color:#cbd5e1;
 
 }
 
@@ -800,26 +757,19 @@ font-size:32px;
 
 }
 
+.feature-card,
+.bottom-card{
+    min-height:auto;
+    flex-direction:column;
+    text-align:center;
 }
-.feature-text{
-    flex: 1;
+
 }
-.feature-text{
-    flex:1;
-    text-align:left;
-}
+
 .brand{
     text-align:center;
 }
 
-.logo-row{
-    width:100%;
-    display:flex;
-    flex-direction:column;
-    justify-content:center;
-    align-items:center;
-    gap:20px;
-}
 .signup-link{
   background:none;
   border:none;
