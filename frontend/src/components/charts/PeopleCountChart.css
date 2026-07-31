@@ -1,0 +1,81 @@
+.people-card{
+
+    background:#111827;
+
+    border:1px solid rgba(255,255,255,.06);
+
+    border-radius:18px;
+
+    padding:16px;
+
+    height:260px;
+
+    box-sizing:border-box;
+
+}
+
+.people-header{
+
+    display:flex;
+
+    justify-content:space-between;
+
+    align-items:center;
+
+    margin-bottom:18px;
+
+}
+
+.people-title{
+
+    display:flex;
+
+    align-items:flex-end;
+
+    gap:8px;
+
+}
+
+.people-title h2{
+
+    color:white;
+
+    font-size:15px;
+
+    margin:0;
+
+    font-weight:700;
+
+}
+
+.people-title span{
+
+    color:#94A3B8;
+
+    font-size:11px;
+
+}
+
+.people-growth{
+
+    color:#22C55E;
+
+    font-size:12px;
+
+    font-weight:700;
+
+}
+
+.people-number{
+
+    font-size:30px;
+
+    font-weight:700;
+
+    color:white;
+
+    margin-bottom:6px;
+
+    line-height:1;
+
+}

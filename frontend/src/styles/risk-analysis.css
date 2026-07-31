@@ -1,0 +1,278 @@
+/* ==========================================
+   AI RISK ANALYSIS
+========================================== */
+
+.risk-panel{
+    display:flex;
+    flex-direction:column;
+    justify-content:space-between;
+    gap:14px;
+    color:#fff;
+    height:100%;
+}
+
+.risk-title{
+    margin:0;
+    font-size:16px;
+    font-weight:700;
+    letter-spacing:.5px;
+    padding-bottom:8px;
+    border-bottom:1px solid rgba(255,255,255,.06);
+}
+
+/* ==========================================
+   TOP SECTION
+========================================== */
+
+.risk-top{
+    display:grid;
+    grid-template-columns:110px 1fr;
+    gap:14px;
+    align-items:center;
+    justify-items:start;
+}
+
+/* ==========================================
+   CONFIDENCE CIRCLE
+========================================== */
+
+.confidence-circle{
+
+    position:relative;
+
+    width:110px;
+
+    height:110px;
+
+    flex-shrink:0;
+
+    margin-left:0;
+
+}
+
+.confidence-circle svg{
+
+    width:100%;
+
+    height:100%;
+
+    transform:rotate(-90deg);
+
+}
+
+.circle-bg{
+    fill:none;
+    stroke:#1F2937;
+    stroke-width:9;
+}
+
+.circle-progress{
+    fill:none;
+    stroke:#EF4444;
+    stroke-width:9;
+    stroke-linecap:round;
+    stroke-dasharray:302;
+    stroke-dashoffset:12;
+}
+
+.confidence-content{
+    position:absolute;
+    inset:0;
+    display:flex;
+    flex-direction:column;
+    justify-content:center;
+    align-items:center;
+}
+
+.confidence-content h2{
+    margin:0;
+    font-size:19px;
+    font-weight:700;
+    line-height:1.1;
+}
+
+.confidence-content span{
+    color:#94A3B8;
+    font-size:10px;
+    margin-top:2px;
+}
+
+/* ==========================================
+   RIGHT INFO
+========================================== */
+
+.risk-info{
+    flex:1;
+    width:100%;
+}
+
+.risk-header{
+    display:flex;
+    align-items:flex-start;
+    gap:8px;
+    margin-bottom:10px;
+}
+
+.risk-header svg{
+    color:#EF4444;
+    margin-top:3px;
+    font-size:16px;
+}
+
+.risk-header h2{
+    margin:0;
+    color:#EF4444;
+    font-size:20px;
+    font-weight:700;
+}
+
+.risk-header p{
+    margin-top:2px;
+    color:#CBD5E1;
+    font-size:12px;
+}
+
+.risk-row{
+    display:flex;
+    justify-content:space-between;
+    align-items:center;
+    margin-bottom:7px;
+    gap:12px;
+}
+
+.risk-row span{
+    color:#94A3B8;
+    font-size:12px;
+}
+
+.risk-row strong{
+    color:white;
+    font-size:13px;
+    text-align:right;
+}
+
+/* ==========================================
+   RECOMMENDATION
+========================================== */
+
+.recommendation-card{
+
+    background:#111827;
+
+    border:1px solid rgba(255,255,255,.06);
+
+    border-radius:12px;
+
+    padding:16px 18px;
+
+    margin-top:4px;
+
+}
+
+.recommendation-title{
+    display:flex;
+    align-items:center;
+    gap:8px;
+    color:#60A5FA;
+    font-weight:600;
+    margin-bottom:8px;
+    font-size:14px;
+}
+
+.recommendation-title svg{
+    font-size:15px;
+}
+
+.recommendation-card p{
+    margin:0;
+    color:#CBD5E1;
+    line-height:1.5;
+    font-size:13px;
+}
+
+/* ==========================================
+   QUICK ACTIONS
+========================================== */
+
+.quick-actions{
+    margin-top:4px;
+}
+
+.quick-actions h4{
+    margin:0 0 10px;
+    font-size:13px;
+    letter-spacing:.5px;
+    color:#94A3B8;
+}
+
+.actions{
+    display:grid;
+    grid-template-columns:repeat(4,1fr);
+    gap:10px;
+}
+
+.actions button{
+    height:64px;
+    border:none;
+    border-radius:10px;
+    background:#111827;
+    border:1px solid rgba(255,255,255,.06);
+    display:flex;
+    flex-direction:column;
+    justify-content:center;
+    align-items:center;
+    gap:6px;
+    cursor:pointer;
+    transition:.25s;
+}
+
+.actions button svg{
+    font-size:17px;
+}
+
+.actions button span{
+    font-size:10px;
+    color:white;
+}
+
+.actions button:nth-child(1){
+    color:#EF4444;
+}
+
+.actions button:nth-child(2){
+    color:#F97316;
+}
+
+.actions button:nth-child(3){
+    color:#8B5CF6;
+}
+
+.actions button:nth-child(4){
+    color:#3B82F6;
+}
+
+.actions button:hover{
+    transform:translateY(-3px);
+    border-color:#2563EB;
+}
+
+/* ==========================================
+   RESPONSIVE
+========================================== */
+
+@media(max-width:1400px){
+
+.risk-top{
+    flex-direction:column;
+    align-items:center;
+}
+
+.risk-info{
+    width:100%;
+}
+
+.actions{
+    grid-template-columns:repeat(2,1fr);
+}
+
+}

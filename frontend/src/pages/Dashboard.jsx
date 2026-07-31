@@ -1,89 +1,46 @@
-import { useState } from "react";
-import Sidebar from "../components/dashboard/Sidebar";
-import StatsCard from "../components/dashboard/StatsCard";
-import LiveCameraFeeds from "../components/dashboard/LiveCameraFeeds";
-import AnalyticsCharts from "../components/dashboard/AnalyticsCharts";
-import AlertsSection from "../components/dashboard/AlertsSection";
-import SearchFilter from "../components/dashboard/SearchFilter";
-import "../styles/dashboard.css";
+import Sidebar from "../components/sidebar/Sidebar";
+import Header from "../components/header/Header";
+import CameraFeed from "../components/camera/CameraFeed";
+
+import CrowdDensity from "../components/charts/CrowdDensity";
+import PeopleCountChart from "../components/charts/PeopleCountChart";
+import RecentAlertsTable from "../components/charts/RecentAlertsTable";
+import RiskAnalysis from "../components/ai/RiskAnalysis";
+
+import concert from "../assets/videos/concert.mp4";
+import street from "../assets/videos/street.mp4";
+
 import {
+  FaShieldAlt,
   FaVideo,
   FaUsers,
   FaExclamationTriangle,
-  FaBell,
-  FaChartLine,
-  FaDownload,
+  FaBrain
 } from "react-icons/fa";
 
+import "../styles/dashboard.css";
+
 function Dashboard() {
-  const [stats] = useState([
-    {
-      id: 1,
-      label: "Total Cameras",
-      value: "8",
-      subtext: "AI Active",
-      icon: <FaVideo />,
-      color: "blue",
-    },
-    {
-      id: 2,
-      label: "People Detected",
-      value: "1,247",
-      subtext: "Total in all zones",
-      icon: <FaUsers />,
-      color: "purple",
-    },
-    {
-      id: 3,
-      label: "High Risk Zones",
-      value: "2",
-      subtext: "Require Attention",
-      icon: <FaExclamationTriangle />,
-      color: "red",
-    },
-    {
-      id: 4,
-      label: "Alerts Today",
-      value: "5",
-      subtext: "New Alerts",
-      icon: <FaBell />,
-      color: "orange",
-    },
-    {
-      id: 5,
-      label: "Average Risk Level",
-      value: "Moderate",
-      subtext: "Overall Risk",
-      icon: <FaChartLine />,
-      color: "green",
-    },
-  ]);
 
-  const [searchTerm, setSearchTerm] = useState("");
-  const [filters, setFilters] = useState({});
-
-  const handleSearch = (term) => {
-    setSearchTerm(term);
-  };
-
-  const handleFilter = (newFilters) => {
-    setFilters(newFilters);
-  };
-
-  // Export function moved here
   const exportToCSV = (data, filename) => {
     const csvContent = [
       Object.keys(data[0]).join(","),
       ...data.map((row) => Object.values(row).join(",")),
     ].join("\n");
 
-    const blob = new Blob([csvContent], { type: "text/csv" });
+    const blob = new Blob([csvContent], {
+      type: "text/csv",
+    });
+
     const url = window.URL.createObjectURL(blob);
+
     const a = document.createElement("a");
     a.href = url;
     a.download = `${filename}.csv`;
+
     document.body.appendChild(a);
     a.click();
+
     window.URL.revokeObjectURL(url);
     document.body.removeChild(a);
   };
@@ -91,63 +48,156 @@ function Dashboard() {
   const exportDashboardData = () => {
     const data = [
       {
-        Metric: "Total Cameras",
-        Value: "8",
-        Status: "Active",
+        Camera: "CAM-01",
+        People: 1247,
+        Risk: "Moderate",
       },
       {
-        Metric: "People Detected",
-        Value: "1,247",
-        Status: "Real-time",
-      },
-      {
-        Metric: "High Risk Zones",
-        Value: "2",
-        Status: "Alert",
+        Camera: "CAM-02",
+        People: 845,
+        Risk: "Low",
       },
     ];
-    exportToCSV(data, "dashboard-data");
+
+    exportToCSV(data, "crowd-dashboard");
   };
 
   return (
     <div className="dashboard">
-      <Sidebar />
 
-      <main className="dashboard-content">
-        {/* Header with Search & Export */}
-        <div className="dashboard-header">
-          <div className="header-top">
-            <h1>Live Monitoring Dashboard</h1>
-            <p className="header-subtitle">Real-time crowd monitoring and risk analysis</p>
+      <Header onExport={exportDashboardData} />
+
+      <div className="dashboard-body">
+
+        <Sidebar />
+
+        <main className="dashboard-content">
+
+          <section className="dashboard-kpis">
+
+            <div className="kpi-card">
+
+              <div className="kpi-icon green">
+                <FaShieldAlt />
+              </div>
+
+              <div className="kpi-content">
+                <span>System Status</span>
+                <h2>ONLINE</h2>
+                <p>All Systems Operational</p>
+              </div>
+
+            </div>
+
+            <div className="kpi-card">
+
+              <div className="kpi-icon blue">
+                <FaVideo />
+              </div>
+
+              <div className="kpi-content">
+                <span>Active Cameras</span>
+                <h2>08</h2>
+                <p>Online</p>
+              </div>
+
+            </div>
+
+            <div className="kpi-card">
+
+              <div className="kpi-icon purple">
+                <FaUsers />
+              </div>
+
+              <div className="kpi-content">
+                <span>Total People</span>
+                <h2>1247</h2>
+                <p>+12%</p>
+              </div>
+
+            </div>
+
+            <div className="kpi-card">
+
+              <div className="kpi-icon red">
+                <FaExclamationTriangle />
+              </div>
+
+              <div className="kpi-content">
+                <span>Risk Level</span>
+                <h2 className="danger">HIGH RISK</h2>
+                <p>Possible Stampede</p>
+              </div>
+
+            </div>
+
+            <div className="kpi-card">
+
+              <div className="kpi-icon violet">
+                <FaBrain />
+              </div>
+
+              <div className="kpi-content">
+                <span>AI Model Status</span>
+                <h2>ACTIVE</h2>
+                <p>YOLOv8 + AI</p>
+              </div>
+
+            </div>
+
+          </section>
+
+          {/* =========================
+              CONTROL ROOM
+          ========================== */}
+
+          <div className="control-room-layout">
+
+            {/* Main Camera */}
+
+            <div className="camera-area">
+
+              <CameraFeed
+                cameraNo="CAM-01"
+                cameraName="Main Stage"
+                location="North Zone"
+                video={concert}
+              />
+
+            </div>
+
+            {/* Right Panel */}
+
+            <div className="side-panel">
+
+              <div className="panel-card">
+                <RiskAnalysis />
+              </div>
+
+            </div>
+
           </div>
-          <div className="header-actions">
-            <button className="export-btn" onClick={exportDashboardData}>
-              <FaDownload /> Export Data
-            </button>
-            <span className="timestamp">May 31, 2025 | 10:24:08 AM</span>
-            <span className="status-badge live">● Live</span>
-          </div>
-        </div>
 
-        {/* Search & Filter */}
-        <SearchFilter onSearch={handleSearch} onFilter={handleFilter} />
 
-        {/* Stats Grid */}
-        <div className="stats-grid">
-          {stats.map((stat) => (
-            <StatsCard key={stat.id} stat={stat} />
-          ))}
-        </div>
+          {/* =========================
+    BOTTOM ANALYTICS
+========================== */}
 
-        {/* Alerts Section */}
-        <AlertsSection />
+<div className="bottom-dashboard">
 
-        {/* Live Camera Feeds */}
-        <LiveCameraFeeds searchTerm={searchTerm} filters={filters} />
+  <CrowdDensity />
 
-        {/* Analytics Charts */}
-        <AnalyticsCharts />
-      </main>
+  <PeopleCountChart />
+
+  <RecentAlertsTable />
+
+</div>
+
+
+        </main>
+
+      </div>
+
     </div>
   );
 }

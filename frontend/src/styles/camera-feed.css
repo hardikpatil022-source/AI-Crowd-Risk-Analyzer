@@ -1,0 +1,360 @@
+/* ===========================================
+   CAMERA SECTION
+=========================================== */
+
+.camera-section{
+    position:relative;
+    width:100%;
+    background:#0B1220;
+    border:1px solid rgba(255,255,255,.05);
+    border-radius:16px;
+    overflow:hidden;
+}
+
+/* ===========================================
+   HEADER
+=========================================== */
+
+.camera-header{
+
+    height:64px;
+
+    padding:0 18px;
+
+    display:flex;
+
+    justify-content:space-between;
+
+    align-items:center;
+
+    background:#0B1220;
+
+    border-bottom:1px solid rgba(255,255,255,.05);
+
+}
+
+/* ===========================================
+   LEFT
+=========================================== */
+
+.camera-left{
+
+    display:flex;
+
+    align-items:center;
+
+    gap:14px;
+
+}
+
+.camera-left h2{
+
+    color:white;
+
+    font-size:18px;
+
+    font-weight:700;
+
+}
+
+.camera-location{
+
+    color:#94A3B8;
+
+    font-size:15px;
+
+}
+
+/* ===========================================
+   LIVE
+=========================================== */
+
+.live-badge{
+
+    display:flex;
+
+    align-items:center;
+
+    gap:8px;
+
+    padding:8px 14px;
+
+    border-radius:999px;
+
+    background:#123B28;
+
+    color:#22C55E;
+
+    font-size:13px;
+
+    font-weight:700;
+
+}
+
+.live-badge svg{
+
+    font-size:10px;
+
+    animation:pulse 1s infinite;
+
+}
+
+@keyframes pulse{
+
+0%{opacity:.4;}
+
+50%{opacity:1;}
+
+100%{opacity:.4;}
+
+}
+
+/* ===========================================
+   RIGHT
+=========================================== */
+
+.camera-right{
+
+    display:flex;
+
+    align-items:center;
+
+    gap:10px;
+
+}
+
+.camera-pill{
+
+    padding:8px 14px;
+
+    border-radius:12px;
+
+    background:#111827;
+
+    border:1px solid rgba(255,255,255,.06);
+
+    color:white;
+
+    font-size:12px;
+
+    font-weight:600;
+
+}
+
+.camera-pill.rec{
+
+    color:#EF4444;
+
+}
+
+/* ===========================================
+   VIDEO
+=========================================== */
+
+.video-wrapper{
+
+    position:relative;
+
+    width:100%;
+
+    height:560px;
+
+    background:#000;
+
+    overflow:hidden;
+
+}
+
+.video-wrapper video{
+
+    width:100%;
+
+    height:100%;
+
+    object-fit:cover;
+
+    display:block;
+
+}
+
+.video-wrapper::after{
+
+    content:"";
+
+    position:absolute;
+
+    left:0;
+
+    right:0;
+
+    bottom:0;
+
+    height:120px;
+
+    background:linear-gradient(
+        transparent,
+        rgba(7,12,22,.95)
+    );
+
+    pointer-events:none;
+
+}
+
+/* ===========================================
+   FULLSCREEN
+=========================================== */
+
+.fullscreen-btn{
+
+    width:42px;
+
+    height:42px;
+
+    border:none;
+
+    border-radius:12px;
+
+    background:#111827;
+
+    color:white;
+
+    display:flex;
+
+    justify-content:center;
+
+    align-items:center;
+
+    cursor:pointer;
+
+    transition:.25s;
+
+}
+
+.fullscreen-btn:hover{
+
+    background:#2563EB;
+
+    transform:scale(1.05);
+
+}
+
+/* ===========================================
+   CAMERA TABS
+=========================================== */
+
+.camera-tabs{
+
+    position:absolute;
+
+    left:20px;
+
+    right:20px;
+
+    bottom:18px;
+
+    display:flex;
+
+    align-items:center;
+
+    gap:12px;
+
+    z-index:20;
+
+}
+
+.camera-tabs button{
+
+    width:102px;
+
+    height:42px;
+
+    border-radius:12px;
+
+    background:rgba(18,24,39,.88);
+
+    backdrop-filter:blur(12px);
+
+    border:1px solid rgba(255,255,255,.08);
+
+}
+
+.camera-tabs button:hover{
+
+    background:#1E40AF;
+
+    color:white;
+
+}
+
+.camera-tabs .active{
+
+    background:linear-gradient(
+        180deg,
+        #377DFF,
+        #2154D8
+    );
+
+    border-color:#4C8BFF;
+
+    color:white;
+
+    box-shadow:
+        0 8px 20px rgba(37,99,235,.35);
+
+}
+
+.camera-tabs .arrow{
+
+    width:44px;
+
+    width:44px;
+
+    margin-left:auto;;
+
+}
+
+.camera-dot{
+
+    width:9px;
+
+    height:9px;
+
+    border-radius:50%;
+
+    background:#22C55E;
+
+}
+
+/* ===========================================
+   RESPONSIVE
+=========================================== */
+
+@media(max-width:1200px){
+
+.camera-header{
+
+flex-direction:column;
+
+height:auto;
+
+padding:15px;
+
+gap:12px;
+
+align-items:flex-start;
+
+}
+
+.camera-right{
+
+flex-wrap:wrap;
+
+}
+
+.camera-tabs{
+
+overflow-x:auto;
+
+}
+
+}

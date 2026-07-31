@@ -1,0 +1,133 @@
+.density-card{
+
+    height:260px;
+
+    background:#111827;
+
+    border:1px solid rgba(255,255,255,.06);
+
+    border-radius:16px;
+
+    padding:16px;
+
+    display:flex;
+
+    flex-direction:column;
+
+    box-sizing:border-box;
+
+}
+
+.density-top{
+
+    display:flex;
+
+    justify-content:space-between;
+
+    align-items:center;
+
+    margin-bottom:12px;
+
+}
+
+.density-top h3{
+
+    margin:0;
+
+    color:#FFFFFF;
+
+    font-size:15px;
+
+    font-weight:700;
+
+    letter-spacing:.3px;
+
+}
+
+.density-badge{
+
+    width:60px;
+
+    height:34px;
+
+    display:flex;
+
+    justify-content:center;
+
+    align-items:center;
+
+    background:#4B1D1D;
+
+    color:#FF5A5A;
+
+    border-radius:10px;
+
+    font-size:12px;
+
+    font-weight:700;
+
+}
+
+/* ===========================
+   CHART AREA
+=========================== */
+
+.density-chart{
+
+    flex:1;
+
+    display:flex;
+
+    justify-content:center;
+
+    align-items:center;
+
+    padding-top:10px;
+
+    padding-bottom:4px;
+
+}
+
+/* Recharts container */
+
+.density-chart .recharts-responsive-container{
+
+    width:100% !important;
+
+    height:175px !important;
+
+}
+
+/* Axis */
+
+.density-chart .recharts-cartesian-axis-tick-value{
+
+    font-size:11px;
+
+    fill:#8FA2C3;
+
+}
+
+/* Grid */
+
+.density-chart .recharts-cartesian-grid line{
+
+    stroke:rgba(255,255,255,.06);
+
+}
+
+/* Area line */
+
+.density-chart .recharts-area-curve{
+
+    stroke-width:3px;
+
+}
+
+/* Tooltip */
+
+.recharts-tooltip-wrapper{
+
+    outline:none;
+
+}

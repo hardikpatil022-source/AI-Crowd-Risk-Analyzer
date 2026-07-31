@@ -1,0 +1,16 @@
+:root {
+  --bg-primary: #050816;
+  --bg-secondary: #0B1220;
+  --card-bg: #111827;
+
+  --header-bg: linear-gradient(135deg, #F8FAFC, #EEF4FF);
+
+  --primary: #3B82F6;
+  --purple: #8B5CF6;
+  --green: #22C55E;
+  --orange: #F59E0B;
+  --red: #EF4444;
+
+  --text: #F8FAFC;
+  --text-secondary: #94A3B8;
+}
