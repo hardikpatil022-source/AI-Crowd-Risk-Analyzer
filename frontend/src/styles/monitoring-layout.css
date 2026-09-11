@@ -1,0 +1,628 @@
+/* =====================================================
+   MONITORING LAYOUT
+===================================================== */
+
+.monitoring-layout {
+  width: 100%;
+  min-height: calc(100vh - 80px);
+  padding: 24px;
+  box-sizing: border-box;
+  background: #f7fbfa;
+}
+
+
+/* =====================================================
+   TOP THREE COLUMNS
+===================================================== */
+
+.monitoring-top {
+  display: grid;
+  grid-template-columns: 270px minmax(420px, 1fr) 300px;
+  gap: 18px;
+  width: 100%;
+  min-height: 560px;
+}
+
+
+/* =====================================================
+   COMMON PANEL
+===================================================== */
+
+.camera-panel,
+.video-panel,
+.stats-panel,
+.alert-panel,
+.bottom-controls {
+  background: #ffffff;
+  border: 1px solid #dceeed;
+  border-radius: 18px;
+  box-shadow: 0 8px 25px rgba(15, 118, 110, 0.08);
+}
+
+
+/* =====================================================
+   PANEL HEADER
+===================================================== */
+
+.monitoring-panel-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  padding: 20px;
+  border-bottom: 1px solid #e5f1ef;
+}
+
+.panel-label {
+  display: block;
+  margin-bottom: 5px;
+  color: #159b98;
+  font-size: 11px;
+  font-weight: 800;
+  letter-spacing: 1.3px;
+}
+
+.monitoring-panel-header h2 {
+  margin: 0;
+  color: #173b42;
+  font-size: 21px;
+  font-weight: 700;
+}
+
+
+/* =====================================================
+   CAMERA LIST
+===================================================== */
+
+.camera-panel {
+  overflow: hidden;
+}
+
+.camera-count {
+  padding: 6px 10px;
+  border-radius: 20px;
+  background: #e8f8f6;
+  color: #159b98;
+  font-size: 10px;
+  font-weight: 800;
+}
+
+.monitoring-camera-list {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  padding: 14px;
+}
+
+.monitoring-camera-item {
+  width: 100%;
+  min-height: 65px;
+  padding: 10px;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  border: 1px solid transparent;
+  border-radius: 12px;
+  background: #f6fbfa;
+  color: #17454b;
+  cursor: pointer;
+  text-align: left;
+  transition: 0.2s ease;
+}
+
+.monitoring-camera-item:hover {
+  background: #eaf8f6;
+  border-color: #b9e5e1;
+}
+
+.monitoring-camera-item.active {
+  background: #dff5f2;
+  border-color: #36bdb5;
+  box-shadow: 0 5px 16px rgba(54, 189, 181, 0.15);
+}
+
+.monitoring-camera-icon {
+  width: 34px;
+  height: 34px;
+  flex-shrink: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 10px;
+  background: #d2f0ed;
+  color: #159b98;
+}
+
+.monitoring-camera-info {
+  display: flex;
+  flex-direction: column;
+  gap: 3px;
+  min-width: 0;
+}
+
+.monitoring-camera-info strong {
+  color: #173b42;
+  font-size: 13px;
+}
+
+.monitoring-camera-info span {
+  color: #6d8b90;
+  font-size: 11px;
+}
+
+.monitoring-status {
+  margin-left: auto;
+  color: #27b58a;
+  font-size: 8px;
+}
+
+
+/* =====================================================
+   LIVE VIDEO
+===================================================== */
+
+.video-panel {
+  overflow: hidden;
+}
+
+.live-indicator {
+  display: flex;
+  align-items: center;
+  gap: 5px;
+  padding: 6px 9px;
+  border-radius: 20px;
+  background: #e8f8f1;
+  color: #1ca36e;
+  font-size: 10px;
+  font-weight: 800;
+}
+
+.live-indicator svg {
+  font-size: 7px;
+}
+
+.monitoring-video-container {
+  position: relative;
+  width: 100%;
+  height: 480px;
+  overflow: hidden;
+  background: #07151b;
+}
+
+.monitoring-video-container video {
+  width: 100%;
+  height: 100%;
+  display: block;
+  object-fit: cover;
+  background: #07151b;
+}
+
+/* =====================================================
+   YOLO PERSON DETECTION OVERLAY
+===================================================== */
+
+.detection-overlay {
+
+  position: absolute;
+
+  top: 0;
+  left: 0;
+
+  width: 100%;
+  height: 100%;
+
+  pointer-events: none;
+
+}
+
+
+/* Individual person bounding box */
+
+.person-box {
+
+  position: absolute;
+
+  border: 2px solid #42d6cc;
+
+  box-sizing: border-box;
+
+  box-shadow:
+    0 0 8px rgba(66, 214, 204, 0.45);
+
+}
+
+
+/* Small label above person */
+
+.person-label {
+
+  position: absolute;
+
+  top: -23px;
+  left: -2px;
+
+  padding: 4px 7px;
+
+  background: #42d6cc;
+
+  color: #07383a;
+
+  border-radius: 4px 4px 0 0;
+
+  font-size: 9px;
+
+  font-weight: 800;
+
+  letter-spacing: 0.4px;
+
+  white-space: nowrap;
+
+}
+
+.video-empty {
+  width: 100%;
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  color: #8ba5a8;
+}
+
+.video-empty svg {
+  margin-bottom: 12px;
+  color: #49bdb6;
+  font-size: 38px;
+}
+
+.video-empty h3 {
+  margin: 0 0 5px;
+  color: #d7e7e7;
+}
+
+.video-empty p {
+  margin: 0;
+  font-size: 13px;
+}
+
+.video-overlay {
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 15px;
+  background: linear-gradient(
+    transparent,
+    rgba(3, 15, 20, 0.85)
+  );
+  pointer-events: none;
+}
+
+.video-camera-name {
+  color: white;
+  font-size: 13px;
+  font-weight: 700;
+}
+
+.fullscreen-monitor-btn {
+  width: 34px;
+  height: 34px;
+  border: none;
+  border-radius: 9px;
+  background: rgba(255, 255, 255, 0.12);
+  color: white;
+  cursor: pointer;
+  pointer-events: auto;
+}
+
+.fullscreen-monitor-btn:hover {
+  background: rgba(54, 189, 181, 0.8);
+}
+
+
+/* =====================================================
+   LIVE STATS
+===================================================== */
+
+.stats-panel {
+  overflow: hidden;
+}
+
+.stats-camera-name {
+  margin: 15px 18px;
+  padding: 10px;
+  border-radius: 10px;
+  background: #f2f9f8;
+  color: #5f7d81;
+  font-size: 11px;
+}
+
+.stat-card {
+  margin: 10px 14px;
+  padding: 13px;
+  display: flex;
+  align-items: center;
+  gap: 11px;
+  border: 1px solid #e1efed;
+  border-radius: 12px;
+  background: #fbfefd;
+}
+
+.stat-icon {
+  width: 36px;
+  height: 36px;
+  flex-shrink: 0;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  border-radius: 10px;
+  background: #e1f6f3;
+  color: #159b98;
+}
+
+.stat-icon.people {
+  background: #e4f5f0;
+  color: #159b78;
+}
+
+.stat-icon.density {
+  background: #fff3df;
+  color: #d58a28;
+}
+
+.stat-icon.risk {
+  background: #ffe8e7;
+  color: #df5b57;
+}
+
+.stat-card div:last-child {
+  display: flex;
+  flex-direction: column;
+  gap: 3px;
+}
+
+.stat-card span {
+  color: #779195;
+  font-size: 9px;
+  font-weight: 700;
+}
+
+.stat-card strong {
+  color: #173b42;
+  font-size: 18px;
+}
+
+.capacity-info {
+  margin: 20px 16px;
+}
+
+.capacity-info > div:first-child {
+  display: flex;
+  justify-content: space-between;
+  margin-bottom: 8px;
+}
+
+.capacity-info span {
+  color: #789196;
+  font-size: 10px;
+}
+
+.capacity-info strong {
+  color: #173b42;
+  font-size: 11px;
+}
+
+.capacity-bar {
+  width: 100%;
+  height: 7px;
+  overflow: hidden;
+  border-radius: 10px;
+  background: #e7f1f0;
+}
+
+.capacity-fill {
+  width: 72%;
+  height: 100%;
+  border-radius: inherit;
+  background: #45bdb4;
+}
+
+
+/* =====================================================
+   ALERT PANEL
+===================================================== */
+
+.alert-panel {
+  margin-top: 18px;
+  overflow: hidden;
+}
+
+.alert-header {
+  padding: 18px 20px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  border-bottom: 1px solid #e5f1ef;
+}
+
+.alert-header h2 {
+  margin: 0;
+  color: #173b42;
+  font-size: 20px;
+}
+
+.alert-live {
+  display: flex;
+  align-items: center;
+  gap: 5px;
+  color: #1ca36e;
+  font-size: 10px;
+  font-weight: 800;
+}
+
+.alert-live svg {
+  font-size: 7px;
+}
+
+.alert-list {
+  padding: 8px 18px;
+}
+
+.alert-item {
+  min-height: 55px;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  border-bottom: 1px solid #edf4f3;
+}
+
+.alert-item:last-child {
+  border-bottom: none;
+}
+
+.alert-item > svg {
+  font-size: 14px;
+}
+
+.alert-item div {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 3px;
+}
+
+.alert-item strong {
+  color: #29484d;
+  font-size: 13px;
+}
+
+.alert-item span {
+  color: #8aa0a4;
+  font-size: 10px;
+}
+
+.alert-item b {
+  font-size: 9px;
+}
+
+.alert-item.high > svg,
+.alert-item.high b {
+  color: #e25b57;
+}
+
+.alert-item.warning > svg,
+.alert-item.warning b {
+  color: #dc9a2e;
+}
+
+.alert-item.normal > svg,
+.alert-item.normal b {
+  color: #27aa83;
+}
+
+
+/* =====================================================
+   BOTTOM CONTROLS
+===================================================== */
+
+.bottom-controls {
+  margin-top: 18px;
+  padding: 18px 20px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 20px;
+}
+
+.bottom-controls-title h2 {
+  margin: 0;
+  color: #173b42;
+  font-size: 20px;
+}
+
+.control-buttons {
+  display: flex;
+  gap: 10px;
+}
+
+.control-buttons button {
+  min-width: 110px;
+  height: 52px;
+  padding: 8px 14px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 5px;
+  border: 1px solid #d9ece9;
+  border-radius: 11px;
+  background: #f4faf9;
+  color: #245159;
+  cursor: pointer;
+  transition: 0.2s ease;
+}
+
+.control-buttons button svg {
+  color: #24a9a2;
+}
+
+.control-buttons button span {
+  font-size: 10px;
+  font-weight: 700;
+}
+
+.control-buttons button:hover {
+  background: #dff5f2;
+  border-color: #42bdb5;
+  transform: translateY(-2px);
+}
+
+
+/* =====================================================
+   RESPONSIVE
+===================================================== */
+
+@media (max-width: 1200px) {
+
+  .monitoring-top {
+    grid-template-columns: 230px minmax(350px, 1fr);
+  }
+
+  .stats-panel {
+    grid-column: 1 / -1;
+  }
+
+  .monitoring-video-container {
+    height: 430px;
+  }
+
+}
+
+@media (max-width: 800px) {
+
+  .monitoring-layout {
+    padding: 12px;
+  }
+
+  .monitoring-top {
+    display: flex;
+    flex-direction: column;
+  }
+
+  .monitoring-video-container {
+    height: 350px;
+  }
+
+  .bottom-controls {
+    flex-direction: column;
+    align-items: stretch;
+  }
+
+  .control-buttons {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+  }
+
+}

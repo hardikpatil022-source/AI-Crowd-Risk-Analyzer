@@ -4,6 +4,7 @@ import {
   Bar,
   XAxis,
   Tooltip,
+  CartesianGrid,
 } from "recharts";
 
 import "./PeopleCountChart.css";
@@ -22,45 +23,75 @@ function PeopleCountChart() {
     <div className="people-card">
 
       <div className="people-header">
+
         <div className="people-title">
+
           <h2>PEOPLE COUNT</h2>
+
           <span>(Today)</span>
+
         </div>
 
         <div className="people-growth">
           ↑ 12%
         </div>
+
       </div>
 
       <div className="people-number">
         1,247
       </div>
 
-      <ResponsiveContainer width="100%" height={145}>
-        <BarChart data={data}>
+      <ResponsiveContainer
+        width="100%"
+        height={145}
+      >
+
+        <BarChart
+          data={data}
+          margin={{
+            top: 8,
+            right: 0,
+            left: 0,
+            bottom: 0,
+          }}
+        >
+
+          <CartesianGrid
+            vertical={false}
+            stroke="rgba(22,101,96,0.14)"
+          />
+
           <XAxis
             dataKey="time"
-            tick={{ fill: "#94A3B8", fontSize: 12 }}
+            tick={{
+              fill: "#527d81",
+              fontSize: 12,
+            }}
             axisLine={false}
             tickLine={false}
           />
 
           <Tooltip
-            cursor={{ fill: "transparent" }}
+            cursor={{
+              fill: "rgba(255,255,255,0.18)",
+            }}
             contentStyle={{
-              background: "#0F172A",
-              border: "1px solid #1E293B",
-              color: "#fff",
+              background: "#16484a",
+              border: "1px solid #327e7c",
+              color: "#ffffff",
               borderRadius: "10px",
             }}
           />
 
           <Bar
             dataKey="people"
-            fill="#3B82F6"
+            fill="#329e98"
             radius={[6, 6, 0, 0]}
           />
+
         </BarChart>
+
       </ResponsiveContainer>
 
     </div>

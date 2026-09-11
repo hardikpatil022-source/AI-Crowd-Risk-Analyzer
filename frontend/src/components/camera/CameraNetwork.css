@@ -1,0 +1,283 @@
+/* =========================================
+   CAMERA NETWORK
+   KEEPING ORIGINAL HORIZONTAL LAYOUT
+========================================= */
+
+.camera-network {
+  width: 100%;
+  box-sizing: border-box;
+}
+
+
+/* =========================================
+   HEADER
+========================================= */
+
+.camera-network-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 24px;
+}
+
+.camera-network-label {
+  display: block;
+  margin-bottom: 8px;
+  color: #249F98;
+  font-size: 13px;
+  font-weight: 800;
+  letter-spacing: 1.4px;
+}
+
+.camera-network-header h2 {
+  margin: 0;
+  color: #123B45;
+  font-size: 27px;
+  font-weight: 500;
+}
+
+
+/* =========================================
+   ACTIVE CAMERA COUNT
+========================================= */
+
+.active-camera-count {
+  padding: 11px 20px;
+  border-radius: 999px;
+
+  background: #EAF9F7;
+  border: 1px solid #C7ECE8;
+
+  color: #238F89;
+
+  font-size: 12px;
+  font-weight: 800;
+  letter-spacing: 0.5px;
+
+  white-space: nowrap;
+}
+
+
+/* =========================================
+   CAMERA GRID
+   EXACTLY 6 CAMERAS IN ONE ROW
+========================================= */
+
+.camera-grid {
+  display: grid;
+
+  grid-template-columns:
+    repeat(6, minmax(0, 1fr));
+
+  gap: 14px;
+
+  width: 100%;
+}
+
+
+/* =========================================
+   CAMERA BOX
+   ONLY COLOR CHANGED
+========================================= */
+
+.camera-box {
+  width: 100%;
+  min-width: 0;
+
+  box-sizing: border-box;
+
+  background: #EAF9F7;
+
+  border: 1px solid #C7ECE8;
+
+  border-radius: 16px;
+
+  color: #164E63;
+
+  padding: 18px 16px;
+
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  justify-content: space-between;
+
+  cursor: pointer;
+
+  transition:
+    background 0.2s ease,
+    border-color 0.2s ease,
+    box-shadow 0.2s ease;
+}
+
+
+/* =========================================
+   CAMERA TITLE
+========================================= */
+
+.camera-title {
+  display: flex;
+  align-items: center;
+  gap: 9px;
+}
+
+.camera-title strong {
+  color: #164E63;
+  font-size: 16px;
+  font-weight: 700;
+}
+
+
+/* =========================================
+   CAMERA LOCATION
+========================================= */
+
+.camera-location {
+  color: #438087;
+  font-size: 13px;
+  font-weight: 500;
+}
+
+
+/* =========================================
+   CAMERA STATUS DOT
+========================================= */
+
+.camera-status-dot {
+  width: 10px;
+  height: 10px;
+
+  flex-shrink: 0;
+
+  border-radius: 50%;
+
+  background: #39B8AA;
+
+  box-shadow:
+    0 0 0 5px rgba(57, 184, 170, 0.12);
+}
+
+
+/* =========================================
+   HOVER
+========================================= */
+
+.camera-box:hover {
+  background: #E2F6F3;
+
+  border-color: #8FD8D0;
+
+  box-shadow:
+    0 6px 16px rgba(42, 166, 156, 0.12);
+}
+
+
+/* =========================================
+   ACTIVE CAMERA
+   SAME LIGHT TURQUOISE COLOR
+========================================= */
+
+.camera-box.active {
+  background: #EAF9F7;
+
+  border: 2px solid #45BDB2;
+
+  color: #164E63;
+
+  box-shadow:
+    0 6px 18px rgba(42, 166, 156, 0.14);
+}
+
+.camera-box.active .camera-title strong {
+  color: #164E63;
+}
+
+.camera-box.active .camera-location {
+  color: #438087;
+}
+
+.camera-box.active .camera-status-dot {
+  background: #159E92;
+
+  box-shadow:
+    0 0 0 5px rgba(21, 158, 146, 0.14);
+}
+
+
+/* =========================================
+   FOCUS
+========================================= */
+
+.camera-box:focus-visible {
+  outline: 2px solid #45BDB2;
+  outline-offset: 2px;
+}
+
+
+/* =========================================
+   IMPORTANT:
+   KEEP 6 CAMERAS HORIZONTAL
+   UNTIL SCREEN BECOMES VERY SMALL
+========================================= */
+
+@media (max-width: 900px) {
+
+  .camera-grid {
+    grid-template-columns:
+      repeat(6, minmax(130px, 1fr));
+
+    overflow-x: auto;
+  }
+
+  .camera-box {
+    min-width: 130px;
+  }
+}
+
+/* =========================================
+   FORCE ALL CAMERA BOXES TO LIGHT TURQUOISE
+========================================= */
+
+.camera-grid .camera-box {
+  background: #EAF9F7 !important;
+  border: 1px solid #C7ECE8 !important;
+  color: #164E63 !important;
+}
+
+.camera-grid .camera-box .camera-title strong {
+  color: #164E63 !important;
+}
+
+.camera-grid .camera-box .camera-location {
+  color: #438087 !important;
+}
+
+.camera-grid .camera-box .camera-status-dot {
+  background: #39B8AA !important;
+}
+
+/* Selected camera - only slightly stronger border */
+.camera-grid .camera-box.active {
+  background: #EAF9F7 !important;
+  border: 2px solid #45BDB2 !important;
+  color: #164E63 !important;
+}
+
+/* Hover */
+.camera-grid .camera-box:hover {
+  background: #E2F6F3 !important;
+  border-color: #8FD8D0 !important;
+}
+
+/* FORCE 6 CAMERAS INTO ONE HORIZONTAL ROW */
+
+.camera-grid {
+  display: grid !important;
+  grid-template-columns: repeat(6, minmax(0, 1fr)) !important;
+  gap: 14px !important;
+  width: 100% !important;
+}
+
+.camera-grid .camera-box {
+  width: 100% !important;
+  min-width: 0 !important;
+}

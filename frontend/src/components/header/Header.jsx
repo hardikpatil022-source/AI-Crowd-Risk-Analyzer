@@ -1,4 +1,5 @@
 import { useEffect, useState } from "react";
+import { useNavigate } from "react-router-dom";
 import "./Header.css";
 
 import {
@@ -10,6 +11,7 @@ import {
 
 function Header() {
   const [time, setTime] = useState(new Date());
+  const navigate = useNavigate();
 
   useEffect(() => {
     const timer = setInterval(() => {
@@ -26,34 +28,41 @@ function Header() {
     year: "numeric",
   });
 
-  const currentTime = time.toLocaleTimeString("en-IN");
+  const currentTime = time.toLocaleTimeString("en-IN", {
+    hour: "numeric",
+    minute: "2-digit",
+    second: "2-digit",
+    hour12: true,
+  });
+
+  const handleLogout = () => {
+    navigate("/");
+  };
 
   return (
     <header className="header">
 
-      {/* LEFT */}
+      {/* ================= LEFT ================= */}
 
       <div className="header-left">
 
-        <div className="logo-box">
+        <div className="header-logo-box">
           <FaShieldAlt />
         </div>
 
-        <div className="brand">
-
+        <div className="header-brand">
           <h1>AI CROWD</h1>
-
           <span>RISK ANALYZER</span>
-
         </div>
 
       </div>
 
-      {/* CENTER */}
+
+      {/* ================= CENTER ================= */}
 
       <div className="header-center">
 
-        <span className="date">
+        <span className="header-date">
           {currentDate}
         </span>
 
@@ -63,34 +72,47 @@ function Header() {
 
       </div>
 
-      {/* RIGHT */}
+
+      {/* ================= RIGHT ================= */}
 
       <div className="header-right">
 
-        <button className="icon-btn">
+        <button
+          className="header-icon-btn"
+          title="Notifications"
+        >
           <FaBell />
         </button>
 
-        <button className="icon-btn">
+        <button
+          className="header-icon-btn"
+          title="Settings"
+        >
           <FaCog />
         </button>
 
-        <div className="user-info">
+        <div className="header-user">
 
           <strong>
             Security Supervisor
           </strong>
 
           <span>
-            ● Online
+            <i></i>
+            Online
           </span>
 
         </div>
 
-        <button className="logout-btn">
+        {/* LOGOUT */}
 
+        <button
+          className="header-logout-btn"
+          title="Logout"
+          type="button"
+          onClick={handleLogout}
+        >
           <FaSignOutAlt />
-
         </button>
 
       </div>

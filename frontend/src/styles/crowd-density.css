@@ -1,133 +1,89 @@
-.density-card{
+/* =====================================================
+   CROWD DENSITY CARD
+===================================================== */
 
-    height:260px;
+.density-card {
+  width: 100%;
+  height: 100%;
+  box-sizing: border-box;
 
-    background:#111827;
+  padding: 22px;
 
-    border:1px solid rgba(255,255,255,.06);
+  background: linear-gradient(
+    135deg,
+    #ffe2e2 0%,
+    #ffcaca 100%
+  );
 
-    border-radius:16px;
+  border: 1px solid #f5b5b5;
 
-    padding:16px;
+  border-radius: 20px;
 
-    display:flex;
+  box-shadow:
+    0 8px 25px rgba(239, 68, 68, 0.12);
 
-    flex-direction:column;
-
-    box-sizing:border-box;
-
+  transition:
+    transform 0.25s ease,
+    box-shadow 0.25s ease;
 }
 
-.density-top{
+.density-card:hover {
+  transform: translateY(-3px);
 
-    display:flex;
-
-    justify-content:space-between;
-
-    align-items:center;
-
-    margin-bottom:12px;
-
+  box-shadow:
+    0 14px 30px rgba(239, 68, 68, 0.18);
 }
 
-.density-top h3{
 
-    margin:0;
+/* =====================================================
+   TOP
+===================================================== */
 
-    color:#FFFFFF;
+.density-top {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
 
-    font-size:15px;
-
-    font-weight:700;
-
-    letter-spacing:.3px;
-
+  margin-bottom: 12px;
 }
 
-.density-badge{
+.density-top h3 {
+  margin: 0;
 
-    width:60px;
+  color: #263238;
 
-    height:34px;
+  font-size: 18px;
+  font-weight: 700;
 
-    display:flex;
-
-    justify-content:center;
-
-    align-items:center;
-
-    background:#4B1D1D;
-
-    color:#FF5A5A;
-
-    border-radius:10px;
-
-    font-size:12px;
-
-    font-weight:700;
-
+  letter-spacing: 0.3px;
 }
 
-/* ===========================
-   CHART AREA
-=========================== */
 
-.density-chart{
+/* =====================================================
+   HIGH BADGE
+===================================================== */
 
-    flex:1;
+.density-badge {
+  padding: 8px 16px;
 
-    display:flex;
+  border-radius: 10px;
 
-    justify-content:center;
+  background: #ffe0e0;
 
-    align-items:center;
+  border: 1px solid #f3aaaa;
 
-    padding-top:10px;
+  color: #dc2626;
 
-    padding-bottom:4px;
-
+  font-size: 13px;
+  font-weight: 700;
 }
 
-/* Recharts container */
 
-.density-chart .recharts-responsive-container{
+/* =====================================================
+   CHART
+===================================================== */
 
-    width:100% !important;
-
-    height:175px !important;
-
-}
-
-/* Axis */
-
-.density-chart .recharts-cartesian-axis-tick-value{
-
-    font-size:11px;
-
-    fill:#8FA2C3;
-
-}
-
-/* Grid */
-
-.density-chart .recharts-cartesian-grid line{
-
-    stroke:rgba(255,255,255,.06);
-
-}
-
-/* Area line */
-
-.density-chart .recharts-area-curve{
-
-    stroke-width:3px;
-
-}
-
-/* Tooltip */
-
-.recharts-tooltip-wrapper{
-
-    outline:none;
-
+.density-chart {
+  width: 100%;
+  height: 190px;
 }

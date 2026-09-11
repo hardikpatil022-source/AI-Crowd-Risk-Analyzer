@@ -1,3 +1,5 @@
+import { useNavigate } from "react-router-dom";
+
 import {
   FaChartPie,
   FaVideo,
@@ -8,6 +10,12 @@ import {
 } from "react-icons/fa";
 
 function Sidebar() {
+  const navigate = useNavigate();
+
+  const handleLogout = () => {
+    navigate("/");
+  };
+
   return (
     <aside className="sidebar">
 
@@ -23,6 +31,7 @@ function Sidebar() {
         </div>
 
       </div>
+
 
       <nav className="sidebar-menu">
 
@@ -48,7 +57,14 @@ function Sidebar() {
 
       </nav>
 
-      <button className="logout-btn">
+
+      {/* ================= LOGOUT ================= */}
+
+      <button
+        className="logout-btn"
+        type="button"
+        onClick={handleLogout}
+      >
         <FaSignOutAlt />
         Logout
       </button>

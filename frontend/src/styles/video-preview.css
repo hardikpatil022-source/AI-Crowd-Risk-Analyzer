@@ -1,0 +1,165 @@
+/* ===========================================
+   CARD
+=========================================== */
+
+.preview-card{
+
+    display:flex;
+
+    flex-direction:column;
+
+}
+
+/* ===========================================
+   HEADER
+=========================================== */
+
+.preview-header{
+
+    display:flex;
+
+    justify-content:space-between;
+
+    align-items:center;
+
+    margin-bottom:18px;
+
+}
+
+.preview-title{
+
+    display:flex;
+
+    align-items:center;
+
+    gap:10px;
+
+    color:white;
+
+    font-size:18px;
+
+    font-weight:600;
+
+}
+
+.camera-status{
+
+    display:flex;
+
+    align-items:center;
+
+    gap:8px;
+
+    color:#CBD5E1;
+
+    font-size:14px;
+
+}
+
+.live-dot{
+
+    color:#EF4444;
+
+    font-size:10px;
+
+}
+
+/* ===========================================
+   VIDEO
+=========================================== */
+
+.video-container{
+
+    height:520px;
+
+    background:#0B1220;
+
+    border-radius:16px;
+
+    border:1px solid rgba(255,255,255,.06);
+
+    display:flex;
+
+    justify-content:center;
+
+    align-items:center;
+
+    overflow:hidden;
+
+}
+
+.video-placeholder{
+
+    display:flex;
+
+    flex-direction:column;
+
+    align-items:center;
+
+    text-align:center;
+
+}
+
+.placeholder-icon{
+
+    font-size:70px;
+
+    color:#334155;
+
+    margin-bottom:18px;
+
+}
+
+.video-placeholder h3{
+
+    color:white;
+
+    margin-bottom:10px;
+
+}
+
+.video-placeholder p{
+
+    color:#94A3B8;
+
+}
+
+/* ===========================================
+   FOOTER
+=========================================== */
+
+.preview-footer{
+
+    margin-top:18px;
+
+    display:flex;
+
+    justify-content:space-between;
+
+    align-items:center;
+
+    color:#94A3B8;
+
+    font-size:13px;
+
+}
+
+.preview-footer strong{
+
+    color:white;
+
+}
+
+.expand-btn{
+
+    cursor:pointer;
+
+    transition:.3s;
+
+}
+
+.expand-btn:hover{
+
+    color:#3B82F6;
+
+}

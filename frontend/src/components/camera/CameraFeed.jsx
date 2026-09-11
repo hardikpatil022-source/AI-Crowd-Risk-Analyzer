@@ -1,33 +1,98 @@
-import { useState } from "react";
-import "../../styles/camera-feed.css";
+import { useEffect, useRef, useState } from "react";
 import {
   FaExpandAlt,
   FaCircle,
-  FaChevronRight,
+  FaPlay,
 } from "react-icons/fa";
+
+import "../../styles/camera-feed.css";
 
 function CameraFeed({
   location,
   video,
   cameraNo,
+  cameraName,
 }) {
+  const videoRef = useRef(null);
 
-  const cameras = [
-    "CAM-01",
-    "CAM-02",
-    "CAM-03",
-    "CAM-04",
-    "CAM-05",
-    "CAM-06",
-  ];
+  const [videoError, setVideoError] = useState(false);
+  const [isPlaying, setIsPlaying] = useState(false);
 
-  const [activeCam, setActiveCam] = useState(cameraNo || "CAM-01");
+  /* =========================================
+     RESET VIDEO WHEN CAMERA CHANGES
+  ========================================= */
+
+  useEffect(() => {
+    setVideoError(false);
+    setIsPlaying(false);
+
+    const videoElement = videoRef.current;
+
+    if (!videoElement) return;
+
+    videoElement.pause();
+    videoElement.load();
+
+    const playVideo = async () => {
+      try {
+        await videoElement.play();
+        setIsPlaying(true);
+      } catch (error) {
+        console.log("Autoplay waiting:", error);
+      }
+    };
+
+    playVideo();
+  }, [video]);
+
+  /* =========================================
+     FULLSCREEN
+  ========================================= */
+
+  const handleFullscreen = () => {
+    const videoElement = videoRef.current;
+
+    if (!videoElement) return;
+
+    if (videoElement.requestFullscreen) {
+      videoElement.requestFullscreen();
+    } else if (videoElement.webkitRequestFullscreen) {
+      videoElement.webkitRequestFullscreen();
+    }
+  };
+
+  /* =========================================
+     MANUAL PLAY
+  ========================================= */
+
+  const handlePlay = async () => {
+    const videoElement = videoRef.current;
+
+    if (!videoElement) return;
+
+    try {
+      await videoElement.play();
+      setIsPlaying(true);
+    } catch (error) {
+      console.error("Video play failed:", error);
+    }
+  };
+
+  /* =========================================
+     VIDEO ERROR
+  ========================================= */
+
+  const handleVideoError = () => {
+    console.error("Unable to load camera video:", video);
+    setVideoError(true);
+  };
 
   return (
-
     <section className="camera-section">
 
-      {/* HEADER */}
+      {/* =====================================
+          CAMERA HEADER
+      ===================================== */}
 
       <div className="camera-header">
 
@@ -38,13 +103,14 @@ function CameraFeed({
             LIVE
           </span>
 
-          <h2>{activeCam}</h2>
+          <h2>{cameraNo}</h2>
 
           <span className="camera-location">
             • {location}
           </span>
 
         </div>
+
 
         <div className="camera-right">
 
@@ -60,7 +126,12 @@ function CameraFeed({
             ● REC
           </span>
 
-          <button className="fullscreen-btn">
+          <button
+            type="button"
+            className="fullscreen-btn"
+            onClick={handleFullscreen}
+            title="Fullscreen"
+          >
             <FaExpandAlt />
           </button>
 
@@ -68,54 +139,85 @@ function CameraFeed({
 
       </div>
 
-      {/* VIDEO */}
+
+      {/* =====================================
+          VIDEO AREA
+      ===================================== */}
 
       <div className="video-wrapper">
 
         <video
+          ref={videoRef}
+          key={video}
           src={video}
           autoPlay
           muted
           loop
           playsInline
+          preload="auto"
+
+          onLoadedData={() => {
+            console.log(`Loaded: ${cameraNo}`);
+            setVideoError(false);
+          }}
+
+          onCanPlay={() => {
+            console.log(`Can play: ${cameraNo}`);
+          }}
+
+          onPlay={() => {
+            setIsPlaying(true);
+          }}
+
+          onPause={() => {
+            setIsPlaying(false);
+          }}
+
+          onError={handleVideoError}
         />
 
-        {/* CAMERA TABS */}
+        {/* =================================
+            VIDEO ERROR
+        ================================= */}
 
-        <div className="camera-tabs">
+        {videoError && (
+          <div className="video-message">
 
-          {cameras.map((cam) => (
+            <div className="video-message-title">
+              Camera Offline
+            </div>
 
-            <button
-              key={cam}
-              className={activeCam === cam ? "active" : ""}
-              onClick={() => setActiveCam(cam)}
-            >
+            <div className="video-message-text">
+              Unable to load {cameraNo}
+            </div>
 
-              {activeCam === cam && (
-                <span className="camera-dot"></span>
-              )}
+            <div className="video-message-path">
+              {video}
+            </div>
 
-              {cam}
+          </div>
+        )}
 
-            </button>
 
-          ))}
+        {/* =================================
+            MANUAL PLAY BUTTON
+        ================================= */}
 
-          <button className="arrow">
-
-            <FaChevronRight />
-
+        {!videoError && !isPlaying && (
+          <button
+            type="button"
+            className="video-play-button"
+            onClick={handlePlay}
+          >
+            <FaPlay />
+            <span>Play Camera</span>
           </button>
-
-        </div>
+        )}
 
       </div>
 
     </section>
-
   );
-
 }
 
 export default CameraFeed;

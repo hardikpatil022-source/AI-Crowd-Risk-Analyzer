@@ -43,7 +43,9 @@ function RecentAlertsTable() {
 
             <FaCircle
               className="alert-dot"
-              style={{ color: item.color }}
+              style={{
+                color: item.color,
+              }}
             />
 
             <span className="alert-time">
@@ -64,9 +66,14 @@ function RecentAlertsTable() {
 
       </div>
 
-      <button className="view-all-btn">
+      <button
+        className="view-all-btn"
+        type="button"
+      >
 
-        View All Alerts
+        <span>
+          View All Alerts
+        </span>
 
         <FaChevronRight />
 

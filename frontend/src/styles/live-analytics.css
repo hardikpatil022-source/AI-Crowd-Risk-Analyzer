@@ -1,0 +1,465 @@
+/* =====================================================
+   LIVE ANALYTICS SECTION
+===================================================== */
+
+.live-analytics {
+  width: 100%;
+
+  height: auto !important;
+  min-height: 0 !important;
+
+  overflow: visible !important;
+
+  box-sizing: border-box;
+
+  padding-bottom: 30px;
+}
+
+
+/* =====================================================
+   LIVE ANALYTICS HEADER
+===================================================== */
+
+.live-analytics-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+
+  margin-bottom: 20px;
+}
+
+.live-analytics-header h2 {
+  margin: 0;
+
+  color: #163d42;
+
+  font-size: 24px;
+  font-weight: 500;
+}
+
+.live-analytics-label {
+  margin-bottom: 7px;
+
+  color: #159c98;
+
+  font-size: 12px;
+  font-weight: 700;
+
+  letter-spacing: 1.5px;
+  text-transform: uppercase;
+}
+
+.live-analytics-updated {
+  color: #789096;
+
+  font-size: 12px;
+}
+
+
+/* =====================================================
+   ANALYTICS GRID
+===================================================== */
+
+.live-analytics-grid {
+  display: grid;
+
+  grid-template-columns:
+    repeat(3, minmax(0, 1fr));
+
+  gap: 18px;
+
+  width: 100%;
+
+  height: auto !important;
+  min-height: 0 !important;
+
+  overflow: visible !important;
+
+  box-sizing: border-box;
+
+  align-items: stretch;
+}
+
+
+/* =====================================================
+   OUTER ANALYTICS BOX
+===================================================== */
+
+.live-analytics-grid > * {
+  min-width: 0;
+
+  width: 100%;
+
+  min-height: 320px;
+
+  height: auto !important;
+
+  box-sizing: border-box;
+
+  overflow: visible !important;
+}
+
+
+/* =====================================================
+   CROWD DENSITY
+===================================================== */
+
+.density-card {
+  width: 100%;
+
+  min-height: 290px;
+
+  height: auto !important;
+
+  padding: 22px;
+
+  box-sizing: border-box;
+
+  border: 1px solid #ffb5b5;
+
+  border-radius: 20px;
+
+  background: linear-gradient(
+    135deg,
+    #ffdede 0%,
+    #ffcaca 100%
+  );
+
+  overflow: visible !important;
+}
+
+
+.density-top {
+  display: flex;
+
+  align-items: center;
+  justify-content: space-between;
+
+  margin-bottom: 10px;
+}
+
+
+.density-top h3 {
+  margin: 0;
+
+  color: #193f43;
+
+  font-size: 18px;
+  font-weight: 700;
+}
+
+
+.density-badge {
+  padding: 9px 15px;
+
+  border: 1px solid #ffabab;
+
+  border-radius: 11px;
+
+  background: rgba(255, 255, 255, 0.28);
+
+  color: #e53939;
+
+  font-size: 13px;
+  font-weight: 700;
+}
+
+
+.density-chart {
+  width: 100%;
+
+  height: 185px;
+
+  margin-top: 6px;
+}
+
+
+/* =====================================================
+   PEOPLE COUNT
+===================================================== */
+
+.people-card {
+  width: 100%;
+
+  min-height: 290px;
+
+  height: auto !important;
+
+  padding: 22px;
+
+  box-sizing: border-box;
+
+  border: 1px solid #a4ded8;
+
+  border-radius: 20px;
+
+  background: linear-gradient(
+    135deg,
+    #d2f3ef 0%,
+    #b9e6e1 100%
+  );
+
+  overflow: visible !important;
+}
+
+
+.people-header {
+  display: flex;
+
+  align-items: center;
+  justify-content: space-between;
+}
+
+
+.people-title {
+  display: flex;
+
+  align-items: baseline;
+
+  gap: 7px;
+}
+
+
+.people-title h2 {
+  margin: 0;
+
+  color: #193f43;
+
+  font-size: 18px;
+  font-weight: 700;
+}
+
+
+.people-title span {
+  color: #4d7c81;
+
+  font-size: 13px;
+}
+
+
+.people-growth {
+  padding: 9px 14px;
+
+  border: 1px solid #9edbd5;
+
+  border-radius: 11px;
+
+  background: rgba(255, 255, 255, 0.24);
+
+  color: #087f72;
+
+  font-size: 13px;
+  font-weight: 700;
+}
+
+
+.people-number {
+  margin-top: 12px;
+  margin-bottom: 8px;
+
+  color: #153d42;
+
+  font-size: 44px;
+  font-weight: 700;
+
+  line-height: 1;
+}
+
+
+.people-card .recharts-responsive-container {
+  width: 100% !important;
+
+  min-height: 145px !important;
+
+  height: 145px !important;
+
+  margin-top: 10px;
+}
+
+
+.people-card .recharts-cartesian-grid-horizontal line {
+  stroke: rgba(22, 101, 96, 0.14);
+}
+
+
+.people-card .recharts-cartesian-axis-tick-value {
+  fill: #527d81;
+}
+
+
+/* =====================================================
+   RECENT ALERTS
+===================================================== */
+
+.recent-alerts-card {
+  width: 100%;
+
+  min-height: 290px;
+
+  height: auto !important;
+
+  padding: 22px;
+
+  box-sizing: border-box;
+
+  border: 1px solid #c7b8f5;
+
+  border-radius: 20px;
+
+  background: linear-gradient(
+    135deg,
+    #e9e2ff 0%,
+    #d9cefa 100%
+  );
+
+  overflow: visible !important;
+}
+
+
+.recent-alerts-card h2 {
+  margin: 0 0 22px;
+
+  color: #193f43;
+
+  font-size: 18px;
+  font-weight: 700;
+}
+
+
+.alerts-body {
+  width: 100%;
+}
+
+
+.alert-item {
+  display: grid;
+
+  grid-template-columns:
+    14px 80px minmax(0, 1fr) 65px;
+
+  align-items: center;
+
+  gap: 8px;
+
+  min-height: 42px;
+
+  border-bottom: 1px solid rgba(90, 70, 150, 0.12);
+}
+
+
+.alert-item:last-child {
+  border-bottom: none;
+}
+
+
+.alert-dot {
+  font-size: 8px;
+}
+
+
+.alert-time {
+  color: #687f84;
+
+  font-size: 12px;
+}
+
+
+.alert-text {
+  color: #183c41;
+
+  font-size: 13px;
+  font-weight: 600;
+}
+
+
+.alert-camera {
+  color: #607d82;
+
+  font-size: 12px;
+
+  text-align: right;
+}
+
+
+.view-all-btn {
+  width: 100%;
+
+  min-height: 44px;
+
+  margin-top: 16px;
+
+  display: flex;
+
+  align-items: center;
+  justify-content: center;
+
+  gap: 9px;
+
+  border: 1px solid #c1b2ee;
+
+  border-radius: 11px;
+
+  background: rgba(255, 255, 255, 0.32);
+
+  color: #465d80;
+
+  font-size: 13px;
+  font-weight: 700;
+
+  cursor: pointer;
+
+  transition: all 0.2s ease;
+}
+
+
+.view-all-btn:hover {
+  background: rgba(255, 255, 255, 0.58);
+
+  transform: translateY(-1px);
+}
+
+
+/* =====================================================
+   REMOVE HEIGHT / OVERFLOW RESTRICTIONS
+===================================================== */
+
+.live-analytics,
+.live-analytics-grid,
+.live-analytics-grid > *,
+.density-card,
+.people-card,
+.recent-alerts-card {
+  max-height: none !important;
+}
+
+
+/* =====================================================
+   RESPONSIVE
+===================================================== */
+
+@media (max-width: 1100px) {
+  .live-analytics-grid {
+    grid-template-columns:
+      repeat(2, minmax(0, 1fr));
+  }
+}
+
+
+@media (max-width: 700px) {
+  .live-analytics-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .live-analytics-grid > * {
+    min-height: 300px;
+  }
+
+  .alert-item {
+    grid-template-columns:
+      14px 70px minmax(0, 1fr);
+  }
+
+  .alert-camera {
+    display: none;
+  }
+}

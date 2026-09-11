@@ -19,3 +19,20 @@ __pycache__/
 
 # Logs
 npm-debug.log*
+
+# Ignore video files
+frontend/src/assets/videos/*.mp4
+frontend/src/assets/videos/*.avi
+frontend/src/assets/videos/*.mov
+frontend/src/assets/videos/*.mkv
+
+# Large AI/video files
+backend/uploads/
+frontend/public/cctv/
+video_generator/input/
+video_generator/output/
+*.mp4
+*.avi
+*.mov
+*.mkv
+*.pt

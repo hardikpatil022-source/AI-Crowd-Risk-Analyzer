@@ -67,14 +67,14 @@ export default function CrowdDensity() {
 
                 <stop
                   offset="5%"
-                  stopColor="#ff4545"
-                  stopOpacity={0.45}
+                  stopColor="#ef5350"
+                  stopOpacity={0.40}
                 />
 
                 <stop
                   offset="95%"
-                  stopColor="#ff4545"
-                  stopOpacity={0}
+                  stopColor="#ef5350"
+                  stopOpacity={0.05}
                 />
 
               </linearGradient>
@@ -82,7 +82,7 @@ export default function CrowdDensity() {
             </defs>
 
             <CartesianGrid
-              stroke="rgba(255,255,255,.06)"
+              stroke="rgba(120,70,70,.12)"
               vertical={true}
               horizontal={true}
             />
@@ -90,7 +90,7 @@ export default function CrowdDensity() {
             <XAxis
               dataKey="time"
               tick={{
-                fill: "#8FA2C3",
+                fill: "#6f777b",
                 fontSize: 11,
               }}
               tickLine={false}
@@ -99,7 +99,7 @@ export default function CrowdDensity() {
 
             <YAxis
               tick={{
-                fill: "#8FA2C3",
+                fill: "#6f777b",
                 fontSize: 11,
               }}
               tickLine={false}
@@ -109,7 +109,7 @@ export default function CrowdDensity() {
             <Area
               type="monotone"
               dataKey="density"
-              stroke="#FF4B4B"
+              stroke="#ef5350"
               strokeWidth={3}
               fill="url(#fillDensity)"
               dot={false}
