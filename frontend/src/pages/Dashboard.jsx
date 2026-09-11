@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import "../styles/live-analytics.css";
 
 import Header from "../components/header/Header";
@@ -44,6 +44,50 @@ function Dashboard() {
   const [activeCamera, setActiveCamera] = useState(cameras[0]);
 
   /* =====================================================
+     LIVE STATS (real backend data)
+  ===================================================== */
+
+  const [liveStats, setLiveStats] = useState({
+    totalCameras: 0,
+    peakPeople: 0,
+    riskLevel: "N/A",
+    totalAnalyses: 0,
+  });
+
+  useEffect(() => {
+    let cancelled = false;
+
+    const loadStats = async () => {
+      try {
+        const [summaryRes, camerasRes] = await Promise.all([
+          fetch("http://127.0.0.1:8000/analytics/summary"),
+          fetch("http://127.0.0.1:8000/cameras"),
+        ]);
+
+        const summary = summaryRes.ok ? await summaryRes.json() : null;
+        const backendCameras = camerasRes.ok ? await camerasRes.json() : [];
+
+        if (!cancelled && summary) {
+          setLiveStats({
+            totalCameras: backendCameras.length,
+            peakPeople: summary.peak_people_count,
+            riskLevel: summary.latest_risk_level || "N/A",
+            totalAnalyses: summary.total_analyses,
+          });
+        }
+      } catch (error) {
+        console.error("Could not load live dashboard stats:", error);
+      }
+    };
+
+    loadStats();
+
+    return () => {
+      cancelled = true;
+    };
+  }, []);
+
+  /* =====================================================
      EXPORT CSV
   ===================================================== */
 
@@ -79,41 +123,27 @@ function Dashboard() {
      EXPORT DASHBOARD DATA
   ===================================================== */
 
-  const exportDashboardData = () => {
-    const data = [
-      {
-        Camera: "CAM-01",
-        People: 1247,
-        Risk: "Moderate",
-      },
-      {
-        Camera: "CAM-02",
-        People: 845,
-        Risk: "Low",
-      },
-      {
-        Camera: "CAM-03",
-        People: 1092,
-        Risk: "High",
-      },
-      {
-        Camera: "CAM-04",
-        People: 734,
-        Risk: "Low",
-      },
-      {
-        Camera: "CAM-05",
-        People: 1156,
-        Risk: "Moderate",
-      },
-      {
-        Camera: "CAM-06",
-        People: 892,
-        Risk: "Moderate",
-      },
-    ];
+  const exportDashboardData = async () => {
+    try {
+      const response = await fetch(
+        "http://127.0.0.1:8000/analysis-history?limit=200"
+      );
 
-    exportToCSV(data, "crowd-dashboard");
+      const history = response.ok ? await response.json() : [];
+
+      const data = history.map((item) => ({
+        Filename: item.filename,
+        CameraId: item.camera_id ?? "",
+        People: item.people_count,
+        Density: `${item.crowd_density}%`,
+        Risk: item.risk_level,
+        Time: item.created_at,
+      }));
+
+      exportToCSV(data, "crowd-dashboard");
+    } catch (error) {
+      console.error("Failed to export dashboard data:", error);
+    }
   };
 
   return (
@@ -713,7 +743,7 @@ function Dashboard() {
                   </strong>
 
                   <span>
-                    6 Cameras Connected
+                    {liveStats.totalCameras} Camera{liveStats.totalCameras === 1 ? "" : "s"} Connected
                   </span>
 
                 </div>
@@ -775,7 +805,7 @@ function Dashboard() {
                   </span>
 
                   <h2>
-                    06
+                    {String(liveStats.totalCameras).padStart(2, "0")}
                   </h2>
 
                   <p>
@@ -800,15 +830,15 @@ function Dashboard() {
                 <div className="kpi-content">
 
                   <span>
-                    Total People
+                    Peak People Count
                   </span>
 
                   <h2>
-                    1,247
+                    {liveStats.peakPeople.toLocaleString()}
                   </h2>
 
                   <p>
-                    Currently Detected
+                    Across {liveStats.totalAnalyses} analyses
                   </p>
 
                 </div>
@@ -833,11 +863,11 @@ function Dashboard() {
                   </span>
 
                   <h2 className="danger">
-                    HIGH
+                    {liveStats.riskLevel}
                   </h2>
 
                   <p>
-                    Requires Attention
+                    Most recent analysis
                   </p>
 
                 </div>

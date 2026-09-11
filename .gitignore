@@ -36,3 +36,5 @@ video_generator/output/
 *.mov
 *.mkv
 *.pt
+
+venv/ then uploads/ then crowd_risk.db

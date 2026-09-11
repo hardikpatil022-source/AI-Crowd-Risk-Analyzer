@@ -3,6 +3,7 @@ import { useNavigate } from "react-router-dom";
 
 import Sidebar from "../components/sidebar/Sidebar";
 import Header from "../components/header/Header";
+import api from "../services/api";
 
 import "../styles/add-cctv.css";
 
@@ -216,19 +217,73 @@ function AddCCTV() {
         );
     }, []);
 
-    const saveCameras = () => {
-        // Note: File objects can't be JSON-serialized into localStorage.
-        // Store the metadata only; keep files in memory for this session.
-        const metaOnly = cameras.map(({ id, name, location, capacity, video }) => ({
-            id,
-            name,
-            location,
-            capacity,
-            hasVideo: !!video,
-            videoName: video ? video.name : null,
-        }));
-        localStorage.setItem("cameras", JSON.stringify(metaOnly));
-        navigate("/monitoring");
+    const [saving, setSaving] = useState(false);
+    const [saveError, setSaveError] = useState(null);
+
+    const saveCameras = async () => {
+        setSaving(true);
+        setSaveError(null);
+
+        try {
+            // For each configured camera (has a video file), actually
+            // upload the video to the backend, then create a Camera
+            // record so History/Analytics/Monitoring can all use it.
+            const saved = await Promise.all(
+                cameras.map(async (camera) => {
+
+                    // Slot has no video yet -> leave it empty
+                    if (!camera.video) {
+                        return {
+                            id: camera.id,
+                            name: camera.name,
+                            location: camera.location,
+                            capacity: camera.capacity || 500,
+                            cameraId: null,
+                            filename: null,
+                        };
+                    }
+
+                    // 1) Upload the actual video file
+                    const formData = new FormData();
+                    formData.append("file", camera.video);
+
+                    const uploadRes = await api.post(
+                        "/upload-video",
+                        formData
+                    );
+
+                    const filename = uploadRes.data.filename;
+
+                    // 2) Create a Camera record in the backend DB
+                    const cameraRes = await api.post("/cameras", {
+                        name: camera.name || camera.id,
+                        location: camera.location || null,
+                        capacity: Number(camera.capacity) || 500,
+                        filename,
+                    });
+
+                    return {
+                        id: camera.id,
+                        name: camera.name,
+                        location: camera.location,
+                        capacity: Number(camera.capacity) || 500,
+                        cameraId: cameraRes.data.id,
+                        filename,
+                    };
+                })
+            );
+
+            localStorage.setItem("cameras", JSON.stringify(saved));
+            navigate("/monitoring");
+
+        } catch (error) {
+            console.error("Failed to save cameras:", error);
+            setSaveError(
+                "Could not upload one or more videos. Make sure the backend is running, then try again."
+            );
+        } finally {
+            setSaving(false);
+        }
     };
 
     return (
@@ -288,11 +343,20 @@ function AddCCTV() {
                             <button
                                 className="save-btn"
                                 onClick={saveCameras}
+                                disabled={saving}
                             >
                                 <span>🛡</span>
-                                SAVE & OPEN CONTROL ROOM
+                                {saving
+                                    ? "UPLOADING..."
+                                    : "SAVE & OPEN CONTROL ROOM"}
                                 <span>→</span>
                             </button>
+
+                            {saveError && (
+                                <p className="save-error" style={{ color: "#e5484d", marginTop: "8px" }}>
+                                    {saveError}
+                                </p>
+                            )}
 
                         </div>
 

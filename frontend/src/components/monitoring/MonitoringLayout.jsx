@@ -1,4 +1,5 @@
 import { useEffect, useState } from "react";
+import { Link } from "react-router-dom";
 
 import CameraList from "./CameraList";
 import LiveVideo from "./LiveVideo";
@@ -9,66 +10,16 @@ import BottomControls from "./BottomControls";
 import "../../styles/monitoring-layout.css";
 
 
-const defaultCameras = [
-
-  {
-    id: "CAM-01",
-    name: "Main Stage • Wide",
-    location: "North Zone",
-    capacity: "500",
-    video: "/cctv/CAM-01_Main_Stage_Wide.mp4",
-  },
-
-  {
-    id: "CAM-02",
-    name: "Left Crowd",
-    location: "West Zone",
-    capacity: "500",
-    video: "/cctv/CAM-02_Left_Crowd.mp4",
-  },
-
-  {
-    id: "CAM-03",
-    name: "Center Crowd",
-    location: "Central Zone",
-    capacity: "500",
-    video: "/cctv/CAM-03_Center_Crowd.mp4",
-  },
-
-  {
-    id: "CAM-04",
-    name: "Right Crowd",
-    location: "East Zone",
-    capacity: "500",
-    video: "/cctv/CAM-04_Right_Crowd.mp4",
-  },
-
-  {
-    id: "CAM-05",
-    name: "Front Dense Area",
-    location: "South Zone",
-    capacity: "500",
-    video: "/cctv/CAM-05_Front_Dense_Area.mp4",
-  },
-
-  {
-    id: "CAM-06",
-    name: "Rear Crowd • Wide",
-    location: "Rear Zone",
-    capacity: "500",
-    video: "/cctv/CAM-06_Rear_Crowd_Wide.mp4",
-  },
-
-];
+const BACKEND_URL = "http://127.0.0.1:8000";
 
 
 function MonitoringLayout() {
 
   const [cameras, setCameras] =
-    useState(defaultCameras);
+    useState([]);
 
   const [activeCamera, setActiveCamera] =
-    useState(defaultCameras[0]);
+    useState(null);
 
   const [analysis, setAnalysis] =
     useState(null);
@@ -78,7 +29,10 @@ function MonitoringLayout() {
 
 
   /*
-   * Load saved camera information
+   * Load the cameras that were actually
+   * uploaded via Add CCTV (saved by
+   * AddCCTV.jsx to localStorage, each
+   * with a real backend filename).
    */
   useEffect(() => {
 
@@ -87,46 +41,37 @@ function MonitoringLayout() {
       const saved =
         localStorage.getItem("cameras");
 
-      if (saved) {
+      if (!saved) return;
 
-        const savedCameras =
-          JSON.parse(saved);
+      const savedCameras =
+        JSON.parse(saved);
 
-        if (Array.isArray(savedCameras)) {
+      if (!Array.isArray(savedCameras)) return;
 
-          const mergedCameras =
-            defaultCameras.map(
-              (defaultCamera) => {
+      const preparedCameras =
+        savedCameras.map((camera) => ({
+          id: camera.id,
+          name: camera.name,
+          location: camera.location,
+          capacity: camera.capacity || 500,
+          cameraId: camera.cameraId ?? null,
+          filename: camera.filename ?? null,
 
-                const savedCamera =
-                  savedCameras.find(
-                    (camera) =>
-                      camera.id ===
-                      defaultCamera.id
-                  );
+          // Build a playable URL from whatever
+          // the backend actually saved
+          video: camera.filename
+            ? `${BACKEND_URL}/uploads/${encodeURIComponent(camera.filename)}`
+            : null,
+        }));
 
-                return {
-                  ...defaultCamera,
-                  ...(savedCamera || {}),
+      setCameras(preparedCameras);
 
-                  // Always use our CCTV
-                  // video files
-                  video:
-                    defaultCamera.video,
-                };
-
-              }
-            );
-
-          setCameras(mergedCameras);
-
-          setActiveCamera(
-            mergedCameras[0]
-          );
-
-        }
-
-      }
+      // Default to the first camera that actually has footage
+      setActiveCamera(
+        preparedCameras.find((camera) => camera.video) ||
+        preparedCameras[0] ||
+        null
+      );
 
     } catch (error) {
 
@@ -145,7 +90,9 @@ function MonitoringLayout() {
    */
   useEffect(() => {
 
-    if (!activeCamera?.video) {
+    // Need a real backend filename to analyze - cameras with no
+    // uploaded footage (or not yet loaded) just show empty state.
+    if (!activeCamera?.filename) {
 
       setAnalysis(null);
 
@@ -153,18 +100,7 @@ function MonitoringLayout() {
 
     }
 
-    const filename =
-      activeCamera.video
-        .split("/")
-        .pop();
-
-    if (!filename) {
-
-      setAnalysis(null);
-
-      return;
-
-    }
+    const filename = activeCamera.filename;
 
 
     let cancelled = false;
@@ -179,8 +115,18 @@ function MonitoringLayout() {
         setAnalysis(null);
 
 
+        const params = new URLSearchParams();
+
+        if (activeCamera.cameraId) {
+          params.set("camera_id", activeCamera.cameraId);
+        }
+
+        if (activeCamera.capacity) {
+          params.set("camera_capacity", activeCamera.capacity);
+        }
+
         const response = await fetch(
-          `http://127.0.0.1:8000/analyze-video/${encodeURIComponent(filename)}`
+          `${BACKEND_URL}/analyze-video/${encodeURIComponent(filename)}?${params.toString()}`
         );
 
 
@@ -251,6 +197,31 @@ function MonitoringLayout() {
       setActiveCamera(camera);
 
     };
+
+
+  if (cameras.length === 0) {
+
+    return (
+
+      <div className="monitoring-layout">
+
+        <div style={{ padding: "48px", textAlign: "center" }}>
+
+          <h2>No cameras configured yet</h2>
+
+          <p>Upload footage in Add CCTV to start monitoring.</p>
+
+          <Link to="/add-cctv" className="save-btn" style={{ display: "inline-flex", marginTop: "16px" }}>
+            Go to Add CCTV →
+          </Link>
+
+        </div>
+
+      </div>
+
+    );
+
+  }
 
 
   return (
