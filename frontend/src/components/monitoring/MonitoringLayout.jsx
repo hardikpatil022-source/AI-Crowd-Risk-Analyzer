@@ -9,269 +9,447 @@ import BottomControls from "./BottomControls";
 
 import "../../styles/monitoring-layout.css";
 
-
 const BACKEND_URL = "http://127.0.0.1:8000";
 
 
 function MonitoringLayout() {
 
-  const [cameras, setCameras] =
-    useState([]);
+    const [cameras, setCameras] =
+        useState([]);
 
-  const [activeCamera, setActiveCamera] =
-    useState(null);
+    const [activeCamera, setActiveCamera] =
+        useState(null);
 
-  const [analysis, setAnalysis] =
-    useState(null);
+    const [analysis, setAnalysis] =
+        useState(null);
 
-  const [analyzing, setAnalyzing] =
-    useState(false);
+    const [analyzing, setAnalyzing] =
+        useState(false);
 
 
-  /*
-   * Load the cameras that were actually
-   * uploaded via Add CCTV (saved by
-   * AddCCTV.jsx to localStorage, each
-   * with a real backend filename).
-   */
-  useEffect(() => {
+    /* =========================================================
+       LOAD CURRENT SIX CAMERA SLOTS
+    ========================================================= */
 
-    try {
+    useEffect(() => {
 
-      const saved =
-        localStorage.getItem("cameras");
+        try {
 
-      if (!saved) return;
+            const saved =
+                localStorage.getItem(
+                    "cameras"
+                );
 
-      const savedCameras =
-        JSON.parse(saved);
+            if (!saved) {
+                return;
+            }
 
-      if (!Array.isArray(savedCameras)) return;
+            const savedCameras =
+                JSON.parse(saved);
 
-      const preparedCameras =
-        savedCameras.map((camera) => ({
-          id: camera.id,
-          name: camera.name,
-          location: camera.location,
-          capacity: camera.capacity || 500,
-          cameraId: camera.cameraId ?? null,
-          filename: camera.filename ?? null,
+            if (
+                !Array.isArray(
+                    savedCameras
+                )
+            ) {
+                return;
+            }
 
-          // Build a playable URL from whatever
-          // the backend actually saved
-          video: camera.filename
-            ? `${BACKEND_URL}/uploads/${encodeURIComponent(camera.filename)}`
-            : null,
-        }));
 
-      setCameras(preparedCameras);
+            /*
+             * IMPORTANT:
+             *
+             * id       = CAM-01
+             * cameraId = backend database ID
+             *
+             * These are NOT the same thing.
+             */
 
-      // Default to the first camera that actually has footage
-      setActiveCamera(
-        preparedCameras.find((camera) => camera.video) ||
-        preparedCameras[0] ||
-        null
-      );
+            const preparedCameras =
+                savedCameras.map(
+                    (camera) => {
 
-    } catch (error) {
+                        const slotName =
+                            camera.id ||
+                            camera.name;
 
-      console.error(
-        "Could not load cameras:",
-        error
-      );
+                        const backendId =
+                            camera.cameraId ??
+                            null;
+
+                        const filename =
+                            camera.filename ??
+                            null;
+
+
+                        return {
+
+                            /*
+                             * USER-FACING IDENTITY
+                             */
+                            id: slotName,
+
+                            name: slotName,
+
+                            /*
+                             * INTERNAL BACKEND ID
+                             */
+                            cameraId:
+                                backendId,
+
+                            location:
+                                camera.location ||
+                                "Zone not set",
+
+                            capacity:
+                                Number(
+                                    camera.capacity
+                                ) || 500,
+
+                            filename,
+
+                            video:
+                                filename
+                                    ? `${BACKEND_URL}/uploads/${encodeURIComponent(
+                                        filename
+                                      )}`
+                                    : null
+                        };
+
+                    }
+                );
+
+
+            /*
+             * Always keep the six Add CCTV
+             * slots in CAM-01 → CAM-06 order.
+             */
+
+            preparedCameras.sort(
+                (a, b) =>
+                    Number(
+                        a.id.replace(
+                            "CAM-",
+                            ""
+                        )
+                    ) -
+                    Number(
+                        b.id.replace(
+                            "CAM-",
+                            ""
+                        )
+                    )
+            );
+
+
+            setCameras(
+                preparedCameras
+            );
+
+
+            /*
+             * Select first camera that has footage.
+             */
+
+            setActiveCamera(
+                preparedCameras.find(
+                    (camera) =>
+                        camera.video
+                ) ||
+                preparedCameras[0] ||
+                null
+            );
+
+        } catch (error) {
+
+            console.error(
+                "Could not load cameras:",
+                error
+            );
+
+        }
+
+    }, []);
+
+
+    /* =========================================================
+       YOLO ANALYSIS
+    ========================================================= */
+
+    useEffect(() => {
+
+        if (
+            !activeCamera?.filename
+        ) {
+
+            setAnalysis(null);
+
+            return;
+        }
+
+
+        const filename =
+            activeCamera.filename;
+
+        let cancelled = false;
+
+
+        const analyzeCamera =
+            async () => {
+
+                try {
+
+                    setAnalyzing(true);
+
+                    setAnalysis(null);
+
+
+                    const params =
+                        new URLSearchParams();
+
+
+                    /*
+                     * Send INTERNAL database ID.
+                     *
+                     * Example:
+                     *
+                     * CAM-01
+                     *    ↓
+                     * cameraId = 1
+                     *    ↓
+                     * camera_id=1
+                     */
+
+                    if (
+                        activeCamera.cameraId !==
+                        null
+                    ) {
+
+                        params.set(
+                            "camera_id",
+                            activeCamera.cameraId
+                        );
+
+                    }
+
+
+                    if (
+                        activeCamera.capacity
+                    ) {
+
+                        params.set(
+                            "camera_capacity",
+                            activeCamera.capacity
+                        );
+
+                    }
+
+
+                    const response =
+                        await fetch(
+                            `${BACKEND_URL}/analyze-video/${encodeURIComponent(
+                                filename
+                            )}?${params.toString()}`
+                        );
+
+
+                    if (!response.ok) {
+
+                        throw new Error(
+                            "Unable to analyze camera"
+                        );
+
+                    }
+
+
+                    const data =
+                        await response.json();
+
+
+                    if (!cancelled) {
+
+                        setAnalysis(
+                            data
+                        );
+
+                    }
+
+                } catch (error) {
+
+                    console.error(
+                        "Camera analysis error:",
+                        error
+                    );
+
+
+                    if (!cancelled) {
+
+                        setAnalysis(
+                            null
+                        );
+
+                    }
+
+                } finally {
+
+                    if (!cancelled) {
+
+                        setAnalyzing(
+                            false
+                        );
+
+                    }
+
+                }
+
+            };
+
+
+        analyzeCamera();
+
+
+        return () => {
+
+            cancelled = true;
+
+        };
+
+    }, [activeCamera]);
+
+
+    /* =========================================================
+       CAMERA SELECT
+    ========================================================= */
+
+    const handleCameraSelect =
+        (camera) => {
+
+            setActiveCamera(
+                camera
+            );
+
+        };
+
+
+    /* =========================================================
+       NO CAMERAS
+    ========================================================= */
+
+    if (
+        cameras.length === 0
+    ) {
+
+        return (
+
+            <div className="monitoring-layout">
+
+                <div
+                    style={{
+                        padding:
+                            "48px",
+                        textAlign:
+                            "center"
+                    }}
+                >
+
+                    <h2>
+                        No cameras configured yet
+                    </h2>
+
+                    <p>
+                        Upload footage in Add CCTV to start monitoring.
+                    </p>
+
+                    <Link
+                        to="/add-cctv"
+                        className="save-btn"
+                        style={{
+                            display:
+                                "inline-flex",
+                            marginTop:
+                                "16px"
+                        }}
+                    >
+                        Go to Add CCTV →
+                    </Link>
+
+                </div>
+
+            </div>
+
+        );
 
     }
 
-  }, []);
 
-
-  /*
-   * Analyze selected camera
-   */
-  useEffect(() => {
-
-    // Need a real backend filename to analyze - cameras with no
-    // uploaded footage (or not yet loaded) just show empty state.
-    if (!activeCamera?.filename) {
-
-      setAnalysis(null);
-
-      return;
-
-    }
-
-    const filename = activeCamera.filename;
-
-
-    let cancelled = false;
-
-
-    const analyzeCamera = async () => {
-
-      try {
-
-        setAnalyzing(true);
-
-        setAnalysis(null);
-
-
-        const params = new URLSearchParams();
-
-        if (activeCamera.cameraId) {
-          params.set("camera_id", activeCamera.cameraId);
-        }
-
-        if (activeCamera.capacity) {
-          params.set("camera_capacity", activeCamera.capacity);
-        }
-
-        const response = await fetch(
-          `${BACKEND_URL}/analyze-video/${encodeURIComponent(filename)}?${params.toString()}`
-        );
-
-
-        if (!response.ok) {
-
-          throw new Error(
-            "Unable to analyze camera"
-          );
-
-        }
-
-
-        const data =
-          await response.json();
-
-
-        if (!cancelled) {
-
-          setAnalysis(data);
-
-        }
-
-      } catch (error) {
-
-        console.error(
-          "Camera analysis error:",
-          error
-        );
-
-
-        if (!cancelled) {
-
-          setAnalysis(null);
-
-        }
-
-      } finally {
-
-        if (!cancelled) {
-
-          setAnalyzing(false);
-
-        }
-
-      }
-
-    };
-
-
-    analyzeCamera();
-
-
-    return () => {
-
-      cancelled = true;
-
-    };
-
-  }, [activeCamera]);
-
-
-  /*
-   * Camera selection
-   */
-  const handleCameraSelect =
-    (camera) => {
-
-      setActiveCamera(camera);
-
-    };
-
-
-  if (cameras.length === 0) {
+    /* =========================================================
+       PAGE
+    ========================================================= */
 
     return (
 
-      <div className="monitoring-layout">
+        <div className="monitoring-layout">
 
-        <div style={{ padding: "48px", textAlign: "center" }}>
+            <div className="monitoring-top">
 
-          <h2>No cameras configured yet</h2>
+                <CameraList
+                    cameras={cameras}
+                    activeCamera={
+                        activeCamera
+                    }
+                    onCameraSelect={
+                        handleCameraSelect
+                    }
+                />
 
-          <p>Upload footage in Add CCTV to start monitoring.</p>
 
-          <Link to="/add-cctv" className="save-btn" style={{ display: "inline-flex", marginTop: "16px" }}>
-            Go to Add CCTV →
-          </Link>
+                <LiveVideo
+                    camera={
+                        activeCamera
+                    }
+                    analysis={
+                        analysis
+                    }
+                    analyzing={
+                        analyzing
+                    }
+                />
+
+
+                <LiveStats
+                    camera={
+                        activeCamera
+                    }
+                    analysis={
+                        analysis
+                    }
+                    analyzing={
+                        analyzing
+                    }
+                />
+
+            </div>
+
+
+            <AlertPanel
+                camera={
+                    activeCamera
+                }
+                analysis={
+                    analysis
+                }
+            />
+
+
+            <BottomControls
+                camera={
+                    activeCamera
+                }
+            />
 
         </div>
 
-      </div>
-
     );
-
-  }
-
-
-  return (
-
-    <div className="monitoring-layout">
-
-
-      <div className="monitoring-top">
-
-
-        <CameraList
-          cameras={cameras}
-          activeCamera={activeCamera}
-          onCameraSelect={
-            handleCameraSelect
-          }
-        />
-
-
-        <LiveVideo
-          camera={activeCamera}
-          analysis={analysis}
-          analyzing={analyzing}
-        />
-
-
-        <LiveStats
-          camera={activeCamera}
-          analysis={analysis}
-          analyzing={analyzing}
-        />
-
-
-      </div>
-
-
-      <AlertPanel
-        camera={activeCamera}
-        analysis={analysis}
-      />
-
-
-      <BottomControls
-        camera={activeCamera}
-      />
-
-
-    </div>
-
-  );
 
 }
 

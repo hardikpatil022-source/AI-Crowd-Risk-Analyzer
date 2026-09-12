@@ -1,0 +1,6 @@
+Camera,Camera ID,Location,Capacity,Scan Time,Video File,People Count,Average People,Crowd Density (%),Risk Level,Detection Count
+CAM-01,1,,500,2026-09-12T04:49:30.883686,b1a5a4f4_CAM-01_Main_Stage_Wide.mp4,18,11.3,3.6,LOW,18
+CAM-09,9,,500,2026-09-12T02:08:06.321025,bb917aaa_CAM-01_Main_Stage_Wide.mp4,18,11.3,3.6,LOW,18
+CAM-10,10,,500,2026-09-12T02:34:49.715294,7c32f45b_CAM-01_Main_Stage_Wide.mp4,18,11.3,3.6,LOW,18
+CAM-11,11,,500,2026-09-12T02:43:57.745865,611cd187_CAM-01_Main_Stage_Wide.mp4,18,11.3,3.6,LOW,18
+CAM-12,12,,500,2026-09-12T02:45:45.110860,9fbec0e2_CAM-01_Main_Stage_Wide.mp4,18,11.3,3.6,LOW,18

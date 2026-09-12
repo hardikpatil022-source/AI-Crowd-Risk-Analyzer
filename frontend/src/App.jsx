@@ -17,38 +17,106 @@ function App() {
   return (
     <Routes>
 
-      {/* Login */}
+      {/* ================================================== */}
+      {/* LOGIN */}
+      {/* ================================================== */}
+
       <Route path="/" element={<Login />} />
 
-      {/* Dashboard */}
+
+      {/* ================================================== */}
+      {/* DASHBOARD */}
+      {/* ================================================== */}
+
       <Route path="/dashboard" element={<Dashboard />} />
 
+
+      {/* ================================================== */}
       {/* CCTV */}
+      {/* ================================================== */}
+
       <Route path="/add-cctv" element={<AddCCTV />} />
 
-      {/* Monitoring */}
+
+      {/* ================================================== */}
+      {/* MONITORING */}
+      {/* ================================================== */}
+
       <Route path="/monitoring" element={<Monitoring />} />
 
-      {/* Upload Video */}
+
+      {/* ================================================== */}
+      {/* UPLOAD VIDEO */}
+      {/* ================================================== */}
+
       <Route path="/upload-video" element={<UploadVideo />} />
 
-      {/* History */}
-      <Route path="/analysis-history" element={<AnalysisHistory />} />
 
-      {/* Analytics */}
-      <Route path="/analytics" element={<Analytics />} />
+      {/* ================================================== */}
+      {/* ANALYSIS HISTORY */}
+      {/* ================================================== */}
 
-      {/* Reports */}
-      <Route path="/reports" element={<Reports />} />
+      {/* Main history route */}
+      <Route
+        path="/history"
+        element={<AnalysisHistory />}
+      />
 
-      {/* Settings */}
-      <Route path="/settings" element={<Settings />} />
+      {/* Existing/alternative history route */}
+      <Route
+        path="/analysis-history"
+        element={<AnalysisHistory />}
+      />
 
-      {/* Live Monitoring (optional) */}
-      <Route path="/live" element={<LiveMonitoring />} />
 
+      {/* ================================================== */}
+      {/* ANALYTICS */}
+      {/* ================================================== */}
+
+      <Route
+        path="/analytics"
+        element={<Analytics />}
+      />
+
+
+      {/* ================================================== */}
+      {/* REPORTS */}
+      {/* ================================================== */}
+
+      <Route
+        path="/reports"
+        element={<Reports />}
+      />
+
+
+      {/* ================================================== */}
+      {/* SETTINGS */}
+      {/* ================================================== */}
+
+      <Route
+        path="/settings"
+        element={<Settings />}
+      />
+
+
+      {/* ================================================== */}
+      {/* LIVE MONITORING */}
+      {/* ================================================== */}
+
+      <Route
+        path="/live"
+        element={<LiveMonitoring />}
+      />
+
+
+      {/* ================================================== */}
       {/* 404 */}
-      <Route path="*" element={<NotFound />} />
+      {/* ================================================== */}
+
+      <Route
+        path="*"
+        element={<NotFound />}
+      />
 
     </Routes>
   );
