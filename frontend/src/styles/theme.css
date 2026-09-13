@@ -1,16 +1,119 @@
 :root {
-  --bg-primary: #050816;
-  --bg-secondary: #0B1220;
-  --card-bg: #111827;
+  --page-bg: #f1fbfa;
+  --card-bg: #ffffff;
+  --text: #49636b;
+  --heading: #173d48;
+  --muted: #81979d;
+  --border: #dceeed;
+  --input-bg: #f5faf9;
+  --hover: #edf7f6;
+}
 
-  --header-bg: linear-gradient(135deg, #F8FAFC, #EEF4FF);
+html[data-theme="dark"] {
+  --page-bg: #101c20;
+  --card-bg: #17272c;
+  --text: #d4e5e7;
+  --heading: #effafa;
+  --muted: #91aeb3;
+  --border: #294147;
+  --input-bg: #20363b;
+  --hover: #284248;
+}
 
-  --primary: #3B82F6;
-  --purple: #8B5CF6;
-  --green: #22C55E;
-  --orange: #F59E0B;
-  --red: #EF4444;
+html,
+body,
+#root {
+  min-height: 100%;
+}
 
-  --text: #F8FAFC;
-  --text-secondary: #94A3B8;
+body {
+  background: var(--page-bg);
+  color: var(--text);
+}
+
+html[data-theme="dark"] body {
+  background: #101c20;
+}
+
+/* Dashboard */
+
+html[data-theme="dark"] .dashboard,
+html[data-theme="dark"] .dashboard-body,
+html[data-theme="dark"] .dashboard-content {
+  background: #101c20;
+}
+
+/* Header */
+
+html[data-theme="dark"] header {
+  background: #17272c !important;
+  border-color: #294147 !important;
+  color: #effafa;
+}
+
+/* Sidebar */
+
+html[data-theme="dark"] .sidebar {
+  background: #17272c !important;
+  border-color: #294147 !important;
+}
+
+html[data-theme="dark"] .sidebar-menu a {
+  color: #b6cccf;
+}
+
+html[data-theme="dark"] .sidebar-menu a:hover {
+  background: #20363b;
+  color: #48c5c0;
+}
+
+/* Common cards */
+
+html[data-theme="dark"] .card,
+html[data-theme="dark"] .dashboard-card,
+html[data-theme="dark"] .analytics-card,
+html[data-theme="dark"] .report-card,
+html[data-theme="dark"] .history-card,
+html[data-theme="dark"] .camera-card,
+html[data-theme="dark"] .stat-card,
+html[data-theme="dark"] .chart-card,
+html[data-theme="dark"] .settings-card,
+html[data-theme="dark"] .settings-header,
+html[data-theme="dark"] .bottom-save {
+  background: #17272c !important;
+  border-color: #294147 !important;
+}
+
+/* =========================================
+   COMPACT SIDEBAR
+========================================= */
+
+html[data-sidebar="compact"] .sidebar {
+  width: 80px;
+}
+
+html[data-sidebar="compact"] .sidebar-logo h2,
+html[data-sidebar="compact"] .sidebar-logo span,
+html[data-sidebar="compact"] .sidebar-menu span {
+  display: none;
+}
+
+html[data-sidebar="compact"] .sidebar-logo,
+html[data-sidebar="compact"] .sidebar-menu a {
+  justify-content: center;
+}
+
+html[data-sidebar="compact"] .logout-btn span {
+  display: none;
+}
+
+/* =========================================
+   ANIMATIONS OFF
+========================================= */
+
+html[data-animations="off"] *,
+html[data-animations="off"] *::before,
+html[data-animations="off"] *::after {
+  animation: none !important;
+  transition: none !important;
 }

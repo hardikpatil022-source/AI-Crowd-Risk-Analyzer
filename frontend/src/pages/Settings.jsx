@@ -4,9 +4,11 @@ import Sidebar from "../components/sidebar/Sidebar";
 import "../styles/settings.css";
 
 const DEFAULT_SETTINGS = {
+  theme: "light",
+
   confidence: 50,
-  boundingBoxes: true,
   personDetection: true,
+  boundingBoxes: true,
 
   lowRisk: 30,
   mediumRisk: 60,
@@ -27,7 +29,7 @@ const DEFAULT_SETTINGS = {
 
 function Settings() {
   const [settings, setSettings] = useState(DEFAULT_SETTINGS);
-  const [saved, setSaved] = useState(false);
+  const [savedMessage, setSavedMessage] = useState("");
 
   const [systemStatus, setSystemStatus] = useState({
     backend: "Checking...",
@@ -35,52 +37,72 @@ function Settings() {
     database: "Checking...",
   });
 
-  // Load saved settings
-  useEffect(() => {
-    try {
-      const stored = localStorage.getItem("crowdRiskSettings");
+  /* ===============================
+     LOAD SETTINGS
+  =============================== */
 
-      if (stored) {
+  useEffect(() => {
+    const saved = localStorage.getItem("crowdRiskSettings");
+
+    if (saved) {
+      try {
+        const parsed = JSON.parse(saved);
+
         setSettings({
           ...DEFAULT_SETTINGS,
-          ...JSON.parse(stored),
+          ...parsed,
         });
+      } catch {
+        setSettings(DEFAULT_SETTINGS);
       }
-    } catch (error) {
-      console.error("Failed to load settings:", error);
     }
   }, []);
 
-  // Check backend / system status
+  /* ===============================
+     APPLY THEME
+  =============================== */
+
   useEffect(() => {
-    const checkSystemStatus = async () => {
-      try {
-        const response = await fetch("http://127.0.0.1:8000/cameras");
+    document.documentElement.setAttribute(
+      "data-theme",
+      settings.theme
+    );
 
-        if (response.ok) {
-          setSystemStatus({
-            backend: "Connected",
-            yolo: "Ready",
-            database: "Connected",
-          });
-        } else {
-          setSystemStatus({
-            backend: "Unavailable",
-            yolo: "Unknown",
-            database: "Unknown",
-          });
-        }
-      } catch (error) {
-        setSystemStatus({
-          backend: "Disconnected",
-          yolo: "Unavailable",
-          database: "Unavailable",
-        });
-      }
-    };
+    localStorage.setItem(
+      "crowdRiskTheme",
+      settings.theme
+    );
+  }, [settings.theme]);
 
-    checkSystemStatus();
-  }, []);
+  /* ===============================
+     APPLY SIDEBAR
+  =============================== */
+
+  useEffect(() => {
+    document.documentElement.setAttribute(
+      "data-sidebar",
+      settings.compactSidebar
+        ? "compact"
+        : "normal"
+    );
+  }, [settings.compactSidebar]);
+
+  /* ===============================
+     APPLY ANIMATIONS
+  =============================== */
+
+  useEffect(() => {
+    document.documentElement.setAttribute(
+      "data-animations",
+      settings.animations
+        ? "on"
+        : "off"
+    );
+  }, [settings.animations]);
+
+  /* ===============================
+     UPDATE SETTING
+  =============================== */
 
   const updateSetting = (key, value) => {
     setSettings((previous) => ({
@@ -88,8 +110,12 @@ function Settings() {
       [key]: value,
     }));
 
-    setSaved(false);
+    setSavedMessage("");
   };
+
+  /* ===============================
+     SAVE
+  =============================== */
 
   const saveSettings = () => {
     localStorage.setItem(
@@ -97,19 +123,23 @@ function Settings() {
       JSON.stringify(settings)
     );
 
-    setSaved(true);
+    setSavedMessage("✓ Settings saved successfully");
 
     setTimeout(() => {
-      setSaved(false);
+      setSavedMessage("");
     }, 2500);
   };
 
+  /* ===============================
+     RESET
+  =============================== */
+
   const resetSettings = () => {
-    const confirmReset = window.confirm(
-      "Are you sure you want to reset all settings to their default values?"
+    const confirmed = window.confirm(
+      "Reset all settings to default?"
     );
 
-    if (!confirmReset) return;
+    if (!confirmed) return;
 
     setSettings(DEFAULT_SETTINGS);
 
@@ -118,24 +148,85 @@ function Settings() {
       JSON.stringify(DEFAULT_SETTINGS)
     );
 
-    setSaved(true);
+    document.documentElement.setAttribute(
+      "data-theme",
+      "light"
+    );
+
+    document.documentElement.setAttribute(
+      "data-sidebar",
+      "normal"
+    );
+
+    document.documentElement.setAttribute(
+      "data-animations",
+      "on"
+    );
+
+    setSavedMessage(
+      "✓ Settings reset successfully"
+    );
 
     setTimeout(() => {
-      setSaved(false);
+      setSavedMessage("");
     }, 2500);
   };
 
-  const getStatusClass = (status) => {
+  /* ===============================
+     SYSTEM STATUS
+  =============================== */
+
+  const checkSystemStatus = async () => {
+    setSystemStatus({
+      backend: "Checking...",
+      yolo: "Checking...",
+      database: "Checking...",
+    });
+
+    try {
+      const response = await fetch(
+        "http://127.0.0.1:8000/cameras"
+      );
+
+      if (response.ok) {
+        setSystemStatus({
+          backend: "Connected",
+          yolo: "Ready",
+          database: "Connected",
+        });
+      } else {
+        setSystemStatus({
+          backend: "Unavailable",
+          yolo: "Unavailable",
+          database: "Unavailable",
+        });
+      }
+    } catch {
+      setSystemStatus({
+        backend: "Disconnected",
+        yolo: "Unavailable",
+        database: "Unavailable",
+      });
+    }
+  };
+
+  useEffect(() => {
+    checkSystemStatus();
+  }, []);
+
+  /* ===============================
+     STATUS CLASS
+  =============================== */
+
+  const statusClass = (status) => {
     if (
       status === "Connected" ||
       status === "Ready"
     ) {
-      return "status-connected";
+      return "status-good";
     }
 
-    if (
-      status === "Checking..."
-    ) {
+    if (status === "Checking...") {
       return "status-checking";
     }
 
@@ -144,85 +235,110 @@ function Settings() {
 
   return (
     <div className="dashboard settings-page">
+
       <Header />
 
       <div className="dashboard-body">
+
         <Sidebar />
 
         <main className="dashboard-content settings-content">
 
-          {/* PAGE HEADER */}
-          <section className="settings-header-card">
+          {/* ================= HEADER ================= */}
+
+          <div className="settings-header">
+
             <div>
               <h1>Settings</h1>
+
               <p>
                 Configure your AI Crowd Risk Analyzer
               </p>
             </div>
 
-            <div className="settings-header-actions">
-              {saved && (
-                <span className="save-success">
-                  ✓ Settings Saved
+            <div className="settings-actions">
+
+              {savedMessage && (
+                <span className="saved-message">
+                  {savedMessage}
                 </span>
               )}
 
               <button
-                className="reset-button"
+                className="reset-btn"
                 onClick={resetSettings}
               >
                 ↻ Reset
               </button>
 
               <button
-                className="save-button"
+                className="save-btn"
                 onClick={saveSettings}
               >
                 ✓ Save Changes
               </button>
-            </div>
-          </section>
 
-          {/* SETTINGS GRID */}
+            </div>
+
+          </div>
+
+
+          {/* ================= GRID ================= */}
+
           <div className="settings-grid">
 
-            {/* AI DETECTION */}
+            {/* ================= AI ================= */}
+
             <section className="settings-card">
-              <div className="settings-card-title">
-                <div className="settings-icon">
+
+              <div className="card-heading">
+
+                <div className="card-icon">
                   🧠
                 </div>
 
                 <div>
                   <h2>AI Detection</h2>
+
                   <p>
-                    Configure YOLO detection parameters
+                    Configure YOLO detection
                   </p>
                 </div>
+
               </div>
 
-              <div className="setting-row">
+
+              <div className="setting-item">
+
                 <div>
-                  <h3>YOLO Model</h3>
-                  <p>
-                    Object detection model used by the system
-                  </p>
+                  <strong>YOLO Model</strong>
+
+                  <small>
+                    Object detection model
+                  </small>
                 </div>
 
-                <span className="value-badge">
+                <span className="badge">
                   YOLOv8
                 </span>
+
               </div>
 
-              <div className="setting-row">
+
+              <div className="setting-item">
+
                 <div>
-                  <h3>Confidence Threshold</h3>
-                  <p>
-                    Minimum confidence required for detection
-                  </p>
+                  <strong>
+                    Confidence Threshold
+                  </strong>
+
+                  <small>
+                    Minimum detection confidence
+                  </small>
                 </div>
 
-                <div className="range-control">
+                <div className="range-box">
+
                   <input
                     type="range"
                     min="10"
@@ -239,248 +355,214 @@ function Settings() {
                   <span>
                     {settings.confidence}%
                   </span>
+
                 </div>
+
               </div>
 
-              <div className="setting-row">
+
+              <div className="setting-item">
+
                 <div>
-                  <h3>Person Detection</h3>
-                  <p>
-                    Detect people in uploaded CCTV footage
-                  </p>
+                  <strong>
+                    Person Detection
+                  </strong>
+
+                  <small>
+                    Detect people in CCTV footage
+                  </small>
                 </div>
 
-                <label className="toggle">
-                  <input
-                    type="checkbox"
-                    checked={settings.personDetection}
-                    onChange={(e) =>
-                      updateSetting(
-                        "personDetection",
-                        e.target.checked
-                      )
-                    }
-                  />
+                <Toggle
+                  checked={settings.personDetection}
+                  onChange={(value) =>
+                    updateSetting(
+                      "personDetection",
+                      value
+                    )
+                  }
+                />
 
-                  <span className="toggle-slider"></span>
-                </label>
               </div>
 
-              <div className="setting-row">
+
+              <div className="setting-item">
+
                 <div>
-                  <h3>Bounding Boxes</h3>
-                  <p>
-                    Display YOLO detection boxes
-                  </p>
+                  <strong>
+                    Bounding Boxes
+                  </strong>
+
+                  <small>
+                    Show YOLO detection boxes
+                  </small>
                 </div>
 
-                <label className="toggle">
-                  <input
-                    type="checkbox"
-                    checked={settings.boundingBoxes}
-                    onChange={(e) =>
-                      updateSetting(
-                        "boundingBoxes",
-                        e.target.checked
-                      )
-                    }
-                  />
+                <Toggle
+                  checked={settings.boundingBoxes}
+                  onChange={(value) =>
+                    updateSetting(
+                      "boundingBoxes",
+                      value
+                    )
+                  }
+                />
 
-                  <span className="toggle-slider"></span>
-                </label>
               </div>
+
             </section>
 
 
-            {/* RISK SETTINGS */}
+            {/* ================= RISK ================= */}
+
             <section className="settings-card">
-              <div className="settings-card-title">
-                <div className="settings-icon risk-icon">
+
+              <div className="card-heading">
+
+                <div className="card-icon danger">
                   🚨
                 </div>
 
                 <div>
                   <h2>Risk Thresholds</h2>
+
                   <p>
-                    Configure crowd density risk levels
+                    Configure crowd risk levels
                   </p>
                 </div>
+
               </div>
 
-              <div className="risk-thresholds">
 
-                <div className="risk-row">
-                  <div className="risk-label">
-                    <span className="risk-dot low"></span>
-                    Low Risk
-                  </div>
+              <RiskInput
+                title="Low Risk"
+                value={settings.lowRisk}
+                onChange={(value) =>
+                  updateSetting("lowRisk", value)
+                }
+              />
 
-                  <span>
+              <RiskInput
+                title="Medium Risk"
+                value={settings.mediumRisk}
+                onChange={(value) =>
+                  updateSetting(
+                    "mediumRisk",
+                    value
+                  )
+                }
+              />
+
+              <RiskInput
+                title="High Risk"
+                value={settings.highRisk}
+                onChange={(value) =>
+                  updateSetting(
+                    "highRisk",
+                    value
+                  )
+                }
+              />
+
+
+              <div className="risk-preview">
+
+                <div>
+                  <span className="green-dot"></span>
+                  LOW
+                  <strong>
                     &lt; {settings.lowRisk}%
-                  </span>
+                  </strong>
                 </div>
 
-                <div className="risk-row">
-                  <div className="risk-label">
-                    <span className="risk-dot medium"></span>
-                    Medium Risk
-                  </div>
-
-                  <span>
-                    {settings.lowRisk}% – {settings.mediumRisk}%
-                  </span>
+                <div>
+                  <span className="yellow-dot"></span>
+                  MEDIUM
+                  <strong>
+                    {settings.lowRisk}–{settings.mediumRisk}%
+                  </strong>
                 </div>
 
-                <div className="risk-row">
-                  <div className="risk-label">
-                    <span className="risk-dot high"></span>
-                    High Risk
-                  </div>
-
-                  <span>
-                    {settings.mediumRisk}% – {settings.highRisk}%
-                  </span>
+                <div>
+                  <span className="orange-dot"></span>
+                  HIGH
+                  <strong>
+                    {settings.mediumRisk}–{settings.highRisk}%
+                  </strong>
                 </div>
 
-                <div className="risk-row">
-                  <div className="risk-label">
-                    <span className="risk-dot critical"></span>
-                    Critical Risk
-                  </div>
-
-                  <span>
+                <div>
+                  <span className="red-dot"></span>
+                  CRITICAL
+                  <strong>
                     &gt; {settings.highRisk}%
-                  </span>
+                  </strong>
                 </div>
 
               </div>
 
-              <div className="threshold-control">
-
-                <label>
-                  Low Risk Limit
-                </label>
-
-                <div className="number-control">
-                  <input
-                    type="number"
-                    min="1"
-                    max="98"
-                    value={settings.lowRisk}
-                    onChange={(e) =>
-                      updateSetting(
-                        "lowRisk",
-                        Number(e.target.value)
-                      )
-                    }
-                  />
-
-                  <span>%</span>
-                </div>
-
-              </div>
-
-              <div className="threshold-control">
-
-                <label>
-                  Medium Risk Limit
-                </label>
-
-                <div className="number-control">
-                  <input
-                    type="number"
-                    min={settings.lowRisk + 1}
-                    max="99"
-                    value={settings.mediumRisk}
-                    onChange={(e) =>
-                      updateSetting(
-                        "mediumRisk",
-                        Number(e.target.value)
-                      )
-                    }
-                  />
-
-                  <span>%</span>
-                </div>
-
-              </div>
-
-              <div className="threshold-control">
-
-                <label>
-                  High Risk Limit
-                </label>
-
-                <div className="number-control">
-                  <input
-                    type="number"
-                    min={settings.mediumRisk + 1}
-                    max="100"
-                    value={settings.highRisk}
-                    onChange={(e) =>
-                      updateSetting(
-                        "highRisk",
-                        Number(e.target.value)
-                      )
-                    }
-                  />
-
-                  <span>%</span>
-                </div>
-
-              </div>
             </section>
 
 
-            {/* AUTOMATIC REPORTS */}
+            {/* ================= REPORTS ================= */}
+
             <section className="settings-card">
-              <div className="settings-card-title">
-                <div className="settings-icon report-icon">
+
+              <div className="card-heading">
+
+                <div className="card-icon blue">
                   📊
                 </div>
 
                 <div>
                   <h2>Automatic Reports</h2>
+
                   <p>
-                    Configure automatic crowd reports
+                    Configure automatic reports
                   </p>
                 </div>
+
               </div>
 
-              <div className="setting-row">
+
+              <div className="setting-item">
+
                 <div>
-                  <h3>Automatic Reports</h3>
-                  <p>
+                  <strong>
+                    Automatic Reports
+                  </strong>
+
+                  <small>
                     Generate reports automatically
-                  </p>
+                  </small>
                 </div>
 
-                <label className="toggle">
-                  <input
-                    type="checkbox"
-                    checked={settings.automaticReports}
-                    onChange={(e) =>
-                      updateSetting(
-                        "automaticReports",
-                        e.target.checked
-                      )
-                    }
-                  />
+                <Toggle
+                  checked={settings.automaticReports}
+                  onChange={(value) =>
+                    updateSetting(
+                      "automaticReports",
+                      value
+                    )
+                  }
+                />
 
-                  <span className="toggle-slider"></span>
-                </label>
               </div>
 
-              <div className="setting-row">
+
+              <div className="setting-item">
+
                 <div>
-                  <h3>Report Frequency</h3>
-                  <p>
-                    How often a new report is generated
-                  </p>
+                  <strong>
+                    Report Frequency
+                  </strong>
+
+                  <small>
+                    Automatic generation interval
+                  </small>
                 </div>
 
                 <select
-                  className="settings-select"
                   value={settings.reportFrequency}
                   onChange={(e) =>
                     updateSetting(
@@ -495,341 +577,455 @@ function Settings() {
                   <option>30 minutes</option>
                   <option>1 hour</option>
                 </select>
+
               </div>
 
-              <div className="setting-row">
+
+              <div className="setting-item">
+
                 <div>
-                  <h3>CSV Reports</h3>
-                  <p>
-                    Generate spreadsheet reports
-                  </p>
+                  <strong>
+                    CSV Reports
+                  </strong>
+
+                  <small>
+                    Generate CSV reports
+                  </small>
                 </div>
 
-                <label className="toggle">
-                  <input
-                    type="checkbox"
-                    checked={settings.csvReports}
-                    onChange={(e) =>
-                      updateSetting(
-                        "csvReports",
-                        e.target.checked
-                      )
-                    }
-                  />
+                <Toggle
+                  checked={settings.csvReports}
+                  onChange={(value) =>
+                    updateSetting(
+                      "csvReports",
+                      value
+                    )
+                  }
+                />
 
-                  <span className="toggle-slider"></span>
-                </label>
               </div>
 
-              <div className="setting-row">
+
+              <div className="setting-item">
+
                 <div>
-                  <h3>PowerPoint Reports</h3>
-                  <p>
-                    Generate presentation reports
-                  </p>
+                  <strong>
+                    PowerPoint Reports
+                  </strong>
+
+                  <small>
+                    Generate PPTX reports
+                  </small>
                 </div>
 
-                <label className="toggle">
-                  <input
-                    type="checkbox"
-                    checked={settings.pptxReports}
-                    onChange={(e) =>
-                      updateSetting(
-                        "pptxReports",
-                        e.target.checked
-                      )
-                    }
-                  />
+                <Toggle
+                  checked={settings.pptxReports}
+                  onChange={(value) =>
+                    updateSetting(
+                      "pptxReports",
+                      value
+                    )
+                  }
+                />
 
-                  <span className="toggle-slider"></span>
-                </label>
               </div>
+
             </section>
 
 
-            {/* NOTIFICATIONS */}
+            {/* ================= ALERTS ================= */}
+
             <section className="settings-card">
-              <div className="settings-card-title">
-                <div className="settings-icon notification-icon">
+
+              <div className="card-heading">
+
+                <div className="card-icon yellow">
                   🔔
                 </div>
 
                 <div>
                   <h2>Notifications</h2>
+
                   <p>
-                    Configure crowd risk alerts
+                    Configure crowd alerts
                   </p>
                 </div>
+
               </div>
 
-              <div className="setting-row">
+
+              <div className="setting-item">
+
                 <div>
-                  <h3>Critical Risk Alerts</h3>
-                  <p>
-                    Alert when critical crowd density is detected
-                  </p>
+                  <strong>
+                    Critical Risk Alerts
+                  </strong>
+
+                  <small>
+                    Alert for critical crowd density
+                  </small>
                 </div>
 
-                <label className="toggle">
-                  <input
-                    type="checkbox"
-                    checked={settings.criticalAlerts}
-                    onChange={(e) =>
-                      updateSetting(
-                        "criticalAlerts",
-                        e.target.checked
-                      )
-                    }
-                  />
+                <Toggle
+                  checked={settings.criticalAlerts}
+                  onChange={(value) =>
+                    updateSetting(
+                      "criticalAlerts",
+                      value
+                    )
+                  }
+                />
 
-                  <span className="toggle-slider"></span>
-                </label>
               </div>
 
-              <div className="setting-row">
+
+              <div className="setting-item">
+
                 <div>
-                  <h3>High Risk Alerts</h3>
-                  <p>
-                    Alert when high crowd density is detected
-                  </p>
+                  <strong>
+                    High Risk Alerts
+                  </strong>
+
+                  <small>
+                    Alert for high crowd density
+                  </small>
                 </div>
 
-                <label className="toggle">
-                  <input
-                    type="checkbox"
-                    checked={settings.highAlerts}
-                    onChange={(e) =>
-                      updateSetting(
-                        "highAlerts",
-                        e.target.checked
-                      )
-                    }
-                  />
+                <Toggle
+                  checked={settings.highAlerts}
+                  onChange={(value) =>
+                    updateSetting(
+                      "highAlerts",
+                      value
+                    )
+                  }
+                />
 
-                  <span className="toggle-slider"></span>
-                </label>
               </div>
 
-              <div className="setting-row">
+
+              <div className="setting-item">
+
                 <div>
-                  <h3>Alert Sound</h3>
-                  <p>
-                    Play sound when an alert occurs
-                  </p>
+                  <strong>
+                    Alert Sound
+                  </strong>
+
+                  <small>
+                    Play sound for alerts
+                  </small>
                 </div>
 
-                <label className="toggle">
-                  <input
-                    type="checkbox"
-                    checked={settings.alertSound}
-                    onChange={(e) =>
-                      updateSetting(
-                        "alertSound",
-                        e.target.checked
-                      )
-                    }
-                  />
+                <Toggle
+                  checked={settings.alertSound}
+                  onChange={(value) =>
+                    updateSetting(
+                      "alertSound",
+                      value
+                    )
+                  }
+                />
 
-                  <span className="toggle-slider"></span>
-                </label>
               </div>
+
             </section>
 
 
-            {/* APPEARANCE */}
+            {/* ================= APPEARANCE ================= */}
+
             <section className="settings-card">
-              <div className="settings-card-title">
-                <div className="settings-icon appearance-icon">
+
+              <div className="card-heading">
+
+                <div className="card-icon purple">
                   🎨
                 </div>
 
                 <div>
                   <h2>Appearance</h2>
-                  <p>
-                    Customize the dashboard interface
-                  </p>
-                </div>
-              </div>
 
-              <div className="setting-row">
-                <div>
-                  <h3>Compact Sidebar</h3>
                   <p>
-                    Use a smaller navigation sidebar
+                    Customize the interface
                   </p>
                 </div>
 
-                <label className="toggle">
-                  <input
-                    type="checkbox"
-                    checked={settings.compactSidebar}
-                    onChange={(e) =>
-                      updateSetting(
-                        "compactSidebar",
-                        e.target.checked
-                      )
-                    }
-                  />
-
-                  <span className="toggle-slider"></span>
-                </label>
               </div>
 
-              <div className="setting-row">
+
+              {/* THEME */}
+
+              <div className="setting-item">
+
                 <div>
-                  <h3>Animations</h3>
-                  <p>
+                  <strong>
+                    Theme
+                  </strong>
+
+                  <small>
+                    Choose Light or Dark mode
+                  </small>
+                </div>
+
+                <select
+                  value={settings.theme}
+                  onChange={(e) =>
+                    updateSetting(
+                      "theme",
+                      e.target.value
+                    )
+                  }
+                >
+                  <option value="light">
+                    ☀️ Light
+                  </option>
+
+                  <option value="dark">
+                    🌙 Dark
+                  </option>
+                </select>
+
+              </div>
+
+
+              {/* SIDEBAR */}
+
+              <div className="setting-item">
+
+                <div>
+                  <strong>
+                    Compact Sidebar
+                  </strong>
+
+                  <small>
+                    Reduce sidebar width
+                  </small>
+                </div>
+
+                <Toggle
+                  checked={settings.compactSidebar}
+                  onChange={(value) =>
+                    updateSetting(
+                      "compactSidebar",
+                      value
+                    )
+                  }
+                />
+
+              </div>
+
+
+              {/* ANIMATIONS */}
+
+              <div className="setting-item">
+
+                <div>
+                  <strong>
+                    Animations
+                  </strong>
+
+                  <small>
                     Enable interface animations
-                  </p>
+                  </small>
                 </div>
 
-                <label className="toggle">
-                  <input
-                    type="checkbox"
-                    checked={settings.animations}
-                    onChange={(e) =>
-                      updateSetting(
-                        "animations",
-                        e.target.checked
-                      )
-                    }
-                  />
+                <Toggle
+                  checked={settings.animations}
+                  onChange={(value) =>
+                    updateSetting(
+                      "animations",
+                      value
+                    )
+                  }
+                />
 
-                  <span className="toggle-slider"></span>
-                </label>
               </div>
 
-              <div className="setting-row">
-                <div>
-                  <h3>Theme</h3>
-                  <p>
-                    Current dashboard theme
-                  </p>
-                </div>
-
-                <span className="value-badge">
-                  Light
-                </span>
-              </div>
             </section>
 
 
-            {/* SYSTEM STATUS */}
-            <section className="settings-card system-card">
-              <div className="settings-card-title">
-                <div className="settings-icon system-icon">
+            {/* ================= SYSTEM ================= */}
+
+            <section className="settings-card">
+
+              <div className="card-heading">
+
+                <div className="card-icon green">
                   🖥️
                 </div>
 
                 <div>
                   <h2>System Status</h2>
+
                   <p>
-                    Current AI Crowd Risk Analyzer status
+                    Current system status
                   </p>
                 </div>
-              </div>
-
-              <div className="system-status-list">
-
-                <div className="system-status-row">
-                  <div>
-                    <h3>Backend API</h3>
-                    <p>
-                      FastAPI server
-                    </p>
-                  </div>
-
-                  <span
-                    className={`system-status ${getStatusClass(
-                      systemStatus.backend
-                    )}`}
-                  >
-                    <span className="status-dot"></span>
-                    {systemStatus.backend}
-                  </span>
-                </div>
-
-                <div className="system-status-row">
-                  <div>
-                    <h3>YOLO Detection</h3>
-                    <p>
-                      Object detection engine
-                    </p>
-                  </div>
-
-                  <span
-                    className={`system-status ${getStatusClass(
-                      systemStatus.yolo
-                    )}`}
-                  >
-                    <span className="status-dot"></span>
-                    {systemStatus.yolo}
-                  </span>
-                </div>
-
-                <div className="system-status-row">
-                  <div>
-                    <h3>Database</h3>
-                    <p>
-                      Crowd analysis database
-                    </p>
-                  </div>
-
-                  <span
-                    className={`system-status ${getStatusClass(
-                      systemStatus.database
-                    )}`}
-                  >
-                    <span className="status-dot"></span>
-                    {systemStatus.database}
-                  </span>
-                </div>
-
-                <div className="system-status-row">
-                  <div>
-                    <h3>Camera Slots</h3>
-                    <p>
-                      Available CCTV slots
-                    </p>
-                  </div>
-
-                  <span className="system-status status-connected">
-                    <span className="status-dot"></span>
-                    6 Available
-                  </span>
-                </div>
 
               </div>
 
-              <div className="api-info">
-                <span>API Endpoint</span>
-                <code>
-                  http://127.0.0.1:8000
-                </code>
-              </div>
+
+              <StatusRow
+                name="Backend API"
+                value={systemStatus.backend}
+                statusClass={statusClass(
+                  systemStatus.backend
+                )}
+              />
+
+              <StatusRow
+                name="YOLO Detection"
+                value={systemStatus.yolo}
+                statusClass={statusClass(
+                  systemStatus.yolo
+                )}
+              />
+
+              <StatusRow
+                name="Database"
+                value={systemStatus.database}
+                statusClass={statusClass(
+                  systemStatus.database
+                )}
+              />
+
+              <StatusRow
+                name="Camera Slots"
+                value="6 Available"
+                statusClass="status-good"
+              />
+
+
+              <button
+                className="test-system-btn"
+                onClick={checkSystemStatus}
+              >
+                ↻ Check System Again
+              </button>
+
             </section>
 
           </div>
 
-          {/* BOTTOM SAVE BAR */}
-          <div className="settings-bottom-bar">
+
+          {/* ================= SAVE BAR ================= */}
+
+          <div className="bottom-save">
+
             <div>
-              <strong>Configuration</strong>
+              <strong>
+                Settings
+              </strong>
+
               <span>
-                Changes are stored locally on this browser.
+                Save your configuration before leaving this page.
               </span>
             </div>
 
             <button
-              className="save-button"
+              className="save-btn"
               onClick={saveSettings}
             >
               ✓ Save Changes
             </button>
+
           </div>
 
         </main>
+
       </div>
+
+    </div>
+  );
+}
+
+
+/* =========================================
+   TOGGLE COMPONENT
+========================================= */
+
+function Toggle({ checked, onChange }) {
+  return (
+    <label className="toggle">
+
+      <input
+        type="checkbox"
+        checked={checked}
+        onChange={(e) =>
+          onChange(e.target.checked)
+        }
+      />
+
+      <span></span>
+
+    </label>
+  );
+}
+
+
+/* =========================================
+   RISK INPUT
+========================================= */
+
+function RiskInput({
+  title,
+  value,
+  onChange,
+}) {
+  return (
+    <div className="risk-input">
+
+      <label>
+        {title}
+      </label>
+
+      <div>
+        <input
+          type="number"
+          min="1"
+          max="100"
+          value={value}
+          onChange={(e) =>
+            onChange(
+              Number(e.target.value)
+            )
+          }
+        />
+
+        <span>%</span>
+      </div>
+
+    </div>
+  );
+}
+
+
+/* =========================================
+   STATUS ROW
+========================================= */
+
+function StatusRow({
+  name,
+  value,
+  statusClass,
+}) {
+  return (
+    <div className="status-row">
+
+      <div>
+        <strong>
+          {name}
+        </strong>
+
+        <small>
+          System component
+        </small>
+      </div>
+
+      <span className={`status ${statusClass}`}>
+        <i></i>
+        {value}
+      </span>
+
     </div>
   );
 }

@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { NavLink } from "react-router-dom";
 import "./Sidebar.css";
 
@@ -16,6 +16,73 @@ import {
 
 function Sidebar() {
   const [expanded, setExpanded] = useState(false);
+
+  const [compact, setCompact] = useState(false);
+
+  /* =========================================
+     LOAD SIDEBAR SETTING
+  ========================================= */
+
+  useEffect(() => {
+    const loadSidebarSetting = () => {
+      try {
+        const saved = localStorage.getItem(
+          "crowdRiskSettings"
+        );
+
+        if (saved) {
+          const settings = JSON.parse(saved);
+
+          setCompact(
+            settings.compactSidebar === true
+          );
+        }
+      } catch (error) {
+        console.error(
+          "Failed to load sidebar setting:",
+          error
+        );
+      }
+    };
+
+    loadSidebarSetting();
+
+    /*
+      Listen for changes made from Settings.
+      This allows the sidebar to update without
+      needing to refresh the page.
+    */
+
+    const handleSettingsChange = () => {
+      loadSidebarSetting();
+    };
+
+    window.addEventListener(
+      "crowdRiskSettingsChanged",
+      handleSettingsChange
+    );
+
+    window.addEventListener(
+      "storage",
+      handleSettingsChange
+    );
+
+    return () => {
+      window.removeEventListener(
+        "crowdRiskSettingsChanged",
+        handleSettingsChange
+      );
+
+      window.removeEventListener(
+        "storage",
+        handleSettingsChange
+      );
+    };
+  }, []);
+
+  /* =========================================
+     MENU ITEMS
+  ========================================= */
 
   const monitoring = [
     {
@@ -61,13 +128,19 @@ function Sidebar() {
     },
   ];
 
+  /* =========================================
+     RENDER MENU
+  ========================================= */
+
   const renderMenu = (items) =>
     items.map((item) => (
       <NavLink
         to={item.path}
         key={item.path}
         className={({ isActive }) =>
-          `sidebar-item ${isActive ? "active" : ""}`
+          `sidebar-item ${
+            isActive ? "active" : ""
+          }`
         }
       >
         <span className="sidebar-icon">
@@ -82,14 +155,40 @@ function Sidebar() {
       </NavLink>
     ));
 
+  /* =========================================
+     SIDEBAR CLASS
+  ========================================= */
+
+  const sidebarClass = [
+    "sidebar",
+    expanded ? "expanded" : "",
+    compact ? "compact" : "",
+  ]
+    .filter(Boolean)
+    .join(" ");
+
+  /* =========================================
+     UI
+  ========================================= */
+
   return (
     <aside
-      className={`sidebar ${expanded ? "expanded" : ""}`}
-      onMouseEnter={() => setExpanded(true)}
-      onMouseLeave={() => setExpanded(false)}
+      className={sidebarClass}
+      onMouseEnter={() => {
+        if (!compact) {
+          setExpanded(true);
+        }
+      }}
+      onMouseLeave={() => {
+        if (!compact) {
+          setExpanded(false);
+        }
+      }}
     >
 
-      {/* LOGO */}
+      {/* =====================================
+          LOGO
+      ===================================== */}
 
       <div className="sidebar-logo">
 
@@ -105,7 +204,9 @@ function Sidebar() {
       </div>
 
 
-      {/* NAVIGATION */}
+      {/* =====================================
+          NAVIGATION
+      ===================================== */}
 
       <div className="sidebar-navigation">
 
